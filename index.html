@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>唐山O2O个人AI工作室 · 创业全景指挥看板 v4.0</title>
+  <title>唐山O2O个人AI工作室 · 创业全景指挥看板 v7.0 (教学内功版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
@@ -19,27 +19,27 @@
   <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-xl font-bold shadow-inner shrink-0">
-          <i class="fa-solid fa-microchip"></i>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl font-bold shadow-inner shrink-0">
+          <i class="fa-solid fa-graduation-cap"></i>
         </div>
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <h1 id="headerBrandName" class="text-base sm:text-lg font-bold tracking-tight">糖玩 AI 实验室 (TangPlay AI Lab)</h1>
-            <span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[11px] px-2 py-0.5 rounded-full font-medium">Cloudflare 云端版 v4.0</span>
+            <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[11px] px-2.5 py-0.5 rounded-full font-bold">★ v7.0 教学内功版</span>
           </div>
-          <p class="text-xs text-slate-400 mt-0.5 hidden sm:block">前全职软件工程师 × 国际学校雅思教师 | 路北沙龙引流 + 路南深度交付</p>
+          <p class="text-xs text-slate-400 mt-0.5 hidden sm:block">前全职软件工程师 × 国际学校雅思教师 | 路北沙龙引流 + 路南深度交付 + B端企业赋能</p>
         </div>
       </div>
 
       <!-- 总体进度与跨设备同步工具栏 -->
       <div class="flex items-center space-x-4 sm:space-x-6 text-sm">
         <div>
-          <div class="text-[11px] text-slate-400">总筹备进度 (已解锁4/5模块)</div>
+          <div class="text-[11px] text-slate-400">全周期36项落地进度</div>
           <div class="flex items-center space-x-2 mt-1">
             <div class="w-24 sm:w-28 h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div id="globalProgressBar" class="bg-emerald-400 h-full transition-all duration-300" style="width: 25%"></div>
+              <div id="globalProgressBar" class="bg-emerald-400 h-full transition-all duration-300" style="width: 10%"></div>
             </div>
-            <span id="globalProgressText" class="font-bold text-emerald-400 text-xs">25%</span>
+            <span id="globalProgressText" class="font-bold text-emerald-400 text-xs">10%</span>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
         <h3 class="font-bold text-base text-slate-900 flex items-center"><i class="fa-solid fa-mobile-screen-button text-indigo-600 mr-2"></i>手机 / 电脑跨设备进度同步</h3>
         <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-      <p class="text-xs text-slate-500 leading-relaxed">在手机上勾选进度后，点击<b>“复制当前状态码”</b>发到微信，在电脑上粘贴并点击<b>“导入恢复”</b>即可1秒同步所有模块进度！</p>
+      <p class="text-xs text-slate-500 leading-relaxed">在手机上勾选进度后，点击<b>“复制当前状态码”</b>发到微信，在电脑上粘贴并点击<b>“导入恢复”</b>即可1秒同步全部36项清单与预算状态！</p>
       <div>
         <label class="text-xs font-bold text-slate-700 block mb-1">状态同步码 (Base64)：</label>
         <textarea id="syncCodeInput" rows="3" class="w-full text-xs font-mono p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:outline-none focus:border-indigo-500" placeholder="在此处粘贴来自另一台设备的状态码..."></textarea>
@@ -87,48 +87,51 @@
   <!-- 主体内容区 -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- 左侧：6大模块导航栏 -->
+    <!-- 左侧：7大模块导航栏 -->
     <aside class="lg:col-span-3 space-y-4">
       <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-2">每日推进模块导航</h2>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-2">创业全景 7 大模块</h2>
         <nav class="space-y-1.5">
-          <button onclick="switchTab('mod1')" id="btn-mod1" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-compass w-5 mr-2"></i>1. 市场调研与品牌立项</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">已解锁</span>
+          <button onclick="switchTab('mod1')" id="btn-mod1" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-compass w-5 mr-1.5"></i>1. 市场调研与品牌立项</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
           </button>
-          <button onclick="switchTab('mod2')" id="btn-mod2" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-couch w-5 mr-2"></i>2. 双场地改造与采购表</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">已解锁</span>
+          <button onclick="switchTab('mod2')" id="btn-mod2" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-couch w-5 mr-1.5"></i>2. 双场地改造与采购表</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
           </button>
-          <button onclick="switchTab('mod3')" id="btn-mod3" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-chalkboard-user w-5 mr-2"></i>3. 阶梯课程研发与逐字稿</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">已解锁</span>
+          <button onclick="switchTab('mod3')" id="btn-mod3" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-chalkboard-user w-5 mr-1.5"></i>3. 阶梯课程研发与逐字稿</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
           </button>
-          <button onclick="switchTab('mod4')" id="btn-mod4" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium transition flex items-center justify-between tab-active">
-            <span class="flex items-center"><i class="fa-solid fa-video w-5 mr-2"></i>4. 线上起号矩阵与脚本库</span>
-            <span class="text-xs bg-white/20 px-2 py-0.5 rounded-full">v4.0 新增</span>
+          <button onclick="switchTab('mod4')" id="btn-mod4" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-video w-5 mr-1.5"></i>4. 线上起号矩阵与脚本库</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
           </button>
-          <button onclick="switchTab('mod5')" id="btn-mod5" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-users-gear w-5 mr-2 text-slate-400"></i>5. 运营SOP与助教合伙制</span>
-            <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">明日9:00</span>
+          <button onclick="switchTab('mod5')" id="btn-mod5" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-users-gear w-5 mr-1.5"></i>5. 运营SOP与助教/B端</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
           </button>
-          <button onclick="switchTab('mod6')" id="btn-mod6" class="w-full text-left px-3.5 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-chart-pie w-5 mr-2 text-slate-400"></i>6. 预算与营收决策模拟器</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">已可用</span>
+          <button onclick="switchTab('mod6')" id="btn-mod6" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
+            <span class="flex items-center"><i class="fa-solid fa-briefcase w-5 mr-1.5"></i>6. 实战文书与财务模拟器</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">完备</span>
+          </button>
+          <button onclick="switchTab('mod7')" id="btn-mod7" class="w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition flex items-center justify-between tab-active">
+            <span class="flex items-center"><i class="fa-solid fa-wand-magic-sparkles w-5 mr-1.5"></i>7. 课堂PPT蓝图与Prompt库</span>
+            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">v7.0 新增</span>
           </button>
         </nav>
       </div>
 
-      <!-- 数字人日更提效锦囊 -->
-      <div class="bg-gradient-to-br from-rose-950 to-slate-900 rounded-2xl p-4 text-white shadow-sm border border-rose-800/40">
+      <!-- 老带新裂变卡片 -->
+      <div class="bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-4 text-white shadow-sm border border-indigo-800/40">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider bg-rose-500 text-white px-2 py-0.5 rounded">每天25分钟日更流水线</span>
-          <i class="fa-solid fa-robot text-rose-300"></i>
+          <span class="text-[11px] font-bold uppercase tracking-wider bg-amber-400 text-slate-900 px-2 py-0.5 rounded">同城口碑裂变引擎</span>
+          <i class="fa-solid fa-share-nodes text-amber-400"></i>
         </div>
-        <ul class="space-y-1.5 text-xs text-slate-300 leading-relaxed">
-          <li>• <b>置顶3条必拍真人</b>：路北+路南实景拍摄，建立唐山同城强信任。</li>
-          <li>• <b>日常更新用数字人+录屏</b>：前3秒数字人抛痛点 + 中间35秒电脑实操画中画 + 结尾5秒邀约周末沙龙。</li>
-          <li>• <b>同城投流铁律</b>：单篇自然赞藏破5后，投75元薯条定向唐山22-42岁测私信。</li>
+        <ul class="space-y-1.5 text-xs text-slate-300 leading-relaxed mt-2">
+          <li>• <b class="text-white">沙龙第85分钟仪式：</b>帮学员拍“人与网页作品同框照”，发朋友圈定位路北糖玩，当场送《50个Coze工作流包》。</li>
+          <li>• <b class="text-white">老带新双向奖励：</b>推荐朋友报L1小班课，老学员直接返现 <b class="text-emerald-400">¥150红包</b>（或抵¥300进阶学费），新学员立减¥100。</li>
         </ul>
       </div>
     </aside>
@@ -161,7 +164,7 @@
           </div>
         </div>
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i>模块一：市场与品牌立项执行清单</h3>
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i>模块一：市场与品牌立项执行清单 (6项)</h3>
           <div class="space-y-2.5 text-sm" id="checklistMod1"></div>
         </div>
       </div>
@@ -183,7 +186,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm" id="procurementContainer"></div>
         </div>
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-screwdriver-wrench text-blue-600 mr-2"></i>模块二：场地微改与硬件调试执行清单</h3>
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-screwdriver-wrench text-blue-600 mr-2"></i>模块二：场地微改与硬件调试执行清单 (6项)</h3>
           <div class="space-y-2.5 text-sm" id="checklistMod2"></div>
         </div>
       </div>
@@ -213,181 +216,291 @@
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-book-open-reader text-indigo-600 mr-2"></i>模块三：课研打磨与教具准备清单</h3>
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-book-open-reader text-indigo-600 mr-2"></i>模块三：课研打磨与教具准备清单 (6项)</h3>
           <div class="space-y-2.5 text-sm" id="checklistMod3"></div>
         </div>
       </div>
 
-      <!-- ================= 模块四内容（v4.0 核心新增） ================= -->
-      <div id="tab-mod4" class="space-y-6">
-
-        <!-- 1. 三大平台账号装修四件套 -->
+      <!-- ================= 模块四内容 ================= -->
+      <div id="tab-mod4" class="hidden space-y-6">
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md">全网视觉锤统一 · 装修四件套</span>
-              <h2 class="text-lg font-bold mt-1">小红书 (60%精力) + 抖音 (25%) + B站 (15%) 账号主页标准配置</h2>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div class="p-4 rounded-xl bg-rose-50/50 border border-rose-200/80 space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-rose-700 text-sm"><i class="fa-solid fa-book-bookmark mr-1"></i>小红书（同城引流主力）</span>
-                <span class="bg-rose-600 text-white px-2 py-0.5 rounded text-[10px]">60%精力</span>
-              </div>
-              <div><b>推荐昵称：</b>Key老师｜唐山糖玩AI实验室</div>
-              <div class="text-slate-600 leading-relaxed bg-white p-2.5 rounded-lg border border-rose-100">
-                💻 前全职软件工程师｜🍎 前国际学校雅思老师<br>
-                📍 唐山路北(糖玩1F沙龙) & 路南(小市实战教室)<br>
-                🚀 不讲虚头巴脑理论，带你在自己电脑跑通AI外挂与零代码开发<br>
-                ☕️ 每周末【2小时AI创客沙龙】开放体验👇看置顶
-              </div>
-            </div>
-
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-slate-900 text-sm"><i class="fa-brands fa-tiktok mr-1"></i>抖音（同城泛流量+老板）</span>
-                <span class="bg-slate-800 text-white px-2 py-0.5 rounded text-[10px]">25%精力</span>
-              </div>
-              <div><b>推荐昵称：</b>Key老师在唐山教AI (前程序员)</div>
-              <div class="text-slate-600 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">
-                前软件开发程序员，也是前国际学校雅思老师。<br>
-                回唐山开了家「像游戏厅一样好玩」的AI实验室。<br>
-                教听得懂的人话，做能落地的AI外挂与副业工具。<br>
-                📍 路北糖玩1层 / 路南小市街区
-              </div>
-            </div>
-
-            <div class="p-4 rounded-xl bg-blue-50/40 border border-blue-200/80 space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-blue-800 text-sm"><i class="fa-brands fa-bilibili mr-1"></i>B站（长视频背书+全国单）</span>
-                <span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">15%精力</span>
-              </div>
-              <div><b>推荐昵称：</b>Key老师_极客AI实验室</div>
-              <div class="text-slate-600 leading-relaxed bg-white p-2.5 rounded-lg border border-blue-100">
-                前全职软件工程师 + 国际学校雅思教师。<br>
-                专注 Vibe Coding（零代码AI编程）、自动化智能体（Agent）与办公提效保姆级实操。<br>
-                线下空间：河北唐山｜线上1v1陪跑见置顶动态
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. 6大首发爆款分镜脚本提词器 -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">首月起号弹药库 · 4:3:2:1 黄金配比</span>
-              <h2 class="text-lg font-bold mt-1">6 篇必拍首发爆款分镜脚本（点击按钮切换拍摄台本）</h2>
-            </div>
-          </div>
-
+          <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">首月起号弹药库 · 6大必拍脚本</span>
+          <h2 class="text-lg font-bold mt-1 mb-4">小红书 / 抖音 / B站 首发爆款分镜脚本提词器</h2>
           <div class="flex flex-wrap gap-2 mb-4">
             <button onclick="switchVideoScript(0)" id="vbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">📌 #01 置顶立人设：程序员+雅思老师</button>
-            <button onclick="switchVideoScript(1)" id="vbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🔥 #02 Vibe Coding：0元3分钟做唐山抽签网</button>
-            <button onclick="switchVideoScript(2)" id="vbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💼 #03 体制内/白领：告别“一眼假”AI公文</button>
-            <button onclick="switchVideoScript(3)" id="vbtn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📸 #04 小红书探店图文：路北神仙AI实验室</button>
-            <button onclick="switchVideoScript(4)" id="vbtn-4" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🤖 #05 副业/老板：3分钟克隆英语+唐山话分身</button>
-            <button onclick="switchVideoScript(5)" id="vbtn-5" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💻 #06 硬件省钱：2块钱云算力跑顶配AI绘画</button>
+            <button onclick="switchVideoScript(1)" id="vbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🔥 #02 Vibe Coding：0元3分钟做抽签网</button>
+            <button onclick="switchVideoScript(2)" id="vbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💼 #03 体制内/白领：告别“一眼假”公文</button>
+            <button onclick="switchVideoScript(3)" id="vbtn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📸 #04 小红书探店图文：路北AI实验室</button>
+            <button onclick="switchVideoScript(4)" id="vbtn-4" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🤖 #05 副业/老板：3分钟克隆双语分身</button>
+            <button onclick="switchVideoScript(5)" id="vbtn-5" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💻 #06 硬件省钱：2块钱云算力跑AI绘画</button>
           </div>
+          <div id="videoScriptBox" class="p-5 rounded-xl bg-slate-900 text-slate-100 text-xs sm:text-sm space-y-3 leading-relaxed"></div>
+        </div>
 
-          <div id="videoScriptBox" class="p-5 rounded-xl bg-slate-900 text-slate-100 text-xs sm:text-sm space-y-3 leading-relaxed">
-            <!-- JS 渲染分镜脚本 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-clapperboard text-rose-600 mr-2"></i>模块四：线上起号与首月内容执行清单 (6项)</h3>
+          <div class="space-y-2.5 text-sm" id="checklistMod4"></div>
+        </div>
+      </div>
+
+      <!-- ================= 模块五内容 ================= -->
+      <div id="tab-mod5" class="hidden space-y-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md">零雇员自动化基建 · 飞书多维表格</span>
+          <h2 class="text-lg font-bold mt-1 mb-4">1套飞书多维表格 = 全职教务 + 销售CRM + 作品墙 + 财务看板</h2>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表1：同城私域线索池</b><p class="text-slate-500 mt-1">记录渠道、画像、跟进状态，用看板视图拖拽跟单。</p></div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表2：排课与考勤表</b><p class="text-slate-500 mt-1">统筹路北/路南排期，开课前24小时自动发定位提醒。</p></div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表3：学员作品与口碑库</b><p class="text-slate-500 mt-1">汇总学员Cloudflare网址，在路北电视投屏做活体招牌。</p></div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表4：收支与投流ROI表</b><p class="text-slate-500 mt-1">自动计算门票、学费、薯条投流与助教分润净利率。</p></div>
           </div>
         </div>
 
-        <!-- 3. 同城投流参数与微信私域承接三步SOP + Checklist -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div class="md:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 space-y-4">
-            <div>
-              <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-1 rounded-md">唐山同城投流 & 私域SOP</span>
-              <h3 class="text-base font-bold mt-2">¥3,000 冷启动投流与锁客漏斗</h3>
-            </div>
-            <div class="space-y-2.5 text-xs text-slate-600">
-              <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <b class="text-slate-900">1. 薯条/DOU+ 定向参数：</b>只框定【唐山市（路北/路南/高新）】，年龄 22-42 岁。自然赞藏破 5 后投 75 元测私信开口成本。
-              </div>
-              <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <b class="text-slate-900">2. 加微第1分钟（发百宝箱）：</b>自动发送《2026唐山打工人AI外挂网址百宝箱》，顺势提问：“想提效、做副业还是自己搓小工具？”
-              </div>
-              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
-                <b>3. 加微第5分钟（锁39.9元沙龙）：</b>邀约本周六下午路北糖玩1层沙龙（送现磨咖啡），收款后拉入当期沙龙快闪群。
-              </div>
-            </div>
-          </div>
-
-          <div class="md:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-            <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-clapperboard text-rose-600 mr-2"></i>模块四：线上起号与首月内容执行清单</h3>
-            <div class="space-y-2.5 text-sm" id="checklistMod4"></div>
-          </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-flag-checkered text-emerald-600 mr-2"></i>模块五：教务系统、助教孵化与B端拓展执行清单 (6项)</h3>
+          <div class="space-y-2.5 text-sm" id="checklistMod5"></div>
         </div>
-
       </div>
 
-      <!-- ================= 模块五预告占位 ================= -->
-      <div id="tab-mod5" class="hidden bg-white rounded-2xl p-8 shadow-sm border border-slate-200/80 text-center space-y-4">
-        <div class="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mx-auto"><i class="fa-solid fa-users-gear"></i></div>
-        <h2 class="text-xl font-bold">模块五：运营管理、教务系统与退居幕后（助教合伙人）机制</h2>
-        <p class="text-sm text-slate-500 max-w-xl mx-auto">该模块将在 **明天上午 9:00** 自动生成。包含：飞书多维表格教务CRM模板、从优秀学员中选拔兼职讲师/助教的培训与分成协议、B端唐山本地企业内训拓展方案，助你实现从一线授课向后台管理过渡。</p>
-      </div>
-
-      <!-- ================= 模块六：预算与营收模拟器 ================= -->
+      <!-- ================= 模块六：实战文书 + 营收模拟器 ================= -->
       <div id="tab-mod6" class="hidden space-y-6">
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h2 class="text-lg font-bold mb-1">交互式月度营收模拟器（滑动滑块实时测算）</h2>
-          <p class="text-xs text-slate-400 mb-6">由于免除房租且使用AI工具替代雇员，你的边际成本极低，净利率约在 80% 左右。</p>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">实战运营文书库 · 即拿即用</span>
+              <h2 class="text-lg font-bold mt-1">私域诱饵、1v1陪跑协议与锁客话术中心</h2>
+            </div>
+            <button onclick="copyCurrentDoc()" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
+              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前文书
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button onclick="switchDoc(0)" id="dbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">🎁 文书1：加微自动发送《打工人AI外挂百宝箱》</button>
+            <button onclick="switchDoc(1)" id="dbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📄 文书2：《L2 1v1私人定制陪跑协议与MVP确认单》</button>
+            <button onclick="switchDoc(2)" id="dbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💬 文书3：私域加微5分钟锁客三步标准话术</button>
+          </div>
+          <textarea id="docTextarea" rows="8" readonly class="w-full p-4 rounded-xl bg-slate-900 text-slate-100 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
+          <div id="docCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 已成功复制到剪贴板！</div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <h2 class="text-lg font-bold mb-1">交互式月度营收与助教分润模拟器</h2>
+          <p class="text-xs text-slate-400 mb-6">免房租双场地 + AI工具替代全职员工 + 零底薪兼职助教分润，构建高净利超级个体模型。</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-4 bg-slate-50 p-4 rounded-xl">
               <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L0周末沙龙人数 (39.9元)</span><span id="val-l0" class="text-blue-600 font-bold">30 人</span></div>
-                <input type="range" id="slider-l0" min="0" max="100" value="30" oninput="calcRevenue()" class="w-full accent-blue-600">
+                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L0周末沙龙人数 (39.9元)</span><span id="val-l0" class="text-blue-600 font-bold">35 人</span></div>
+                <input type="range" id="slider-l0" min="0" max="120" value="35" oninput="calcRevenue()" class="w-full accent-blue-600">
               </div>
               <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L1小班实战营招生 (均价1280元)</span><span id="val-l1" class="text-blue-600 font-bold">16 人</span></div>
-                <input type="range" id="slider-l1" min="0" max="60" value="16" oninput="calcRevenue()" class="w-full accent-blue-600">
+                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L1小班实战营招生 (均价1280元)</span><span id="val-l1" class="text-blue-600 font-bold">18 人</span></div>
+                <input type="range" id="slider-l1" min="0" max="60" value="18" oninput="calcRevenue()" class="w-full accent-blue-600">
               </div>
               <div>
                 <div class="flex justify-between text-xs font-medium mb-1"><span>每月L2 1v1私教/轻咨询 (均价3500元)</span><span id="val-l2" class="text-blue-600 font-bold">3 单</span></div>
                 <input type="range" id="slider-l2" min="0" max="15" value="3" oninput="calcRevenue()" class="w-full accent-blue-600">
               </div>
               <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L3 企业内训/部署 (12000元)</span><span id="val-l3" class="text-blue-600 font-bold">0 单</span></div>
-                <input type="range" id="slider-l3" min="0" max="5" value="0" oninput="calcRevenue()" class="w-full accent-blue-600">
+                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L3 B端企业内训/部署 (均价12000元)</span><span id="val-l3" class="text-blue-600 font-bold">1 单</span></div>
+                <input type="range" id="slider-l3" min="0" max="6" value="1" oninput="calcRevenue()" class="w-full accent-blue-600">
               </div>
             </div>
             <div class="md:col-span-2 flex flex-col justify-between bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-6 rounded-2xl">
               <div>
                 <span class="text-xs uppercase tracking-wider text-indigo-300">预估月度总营收 (Gross Revenue)</span>
-                <div id="totalRev" class="text-4xl font-extrabold text-amber-400 mt-2">¥ 32,177</div>
+                <div id="totalRev" class="text-4xl font-extrabold text-amber-400 mt-2">¥ 46,937</div>
                 <div class="mt-3 inline-block bg-emerald-500/20 border border-emerald-400/30 px-4 py-2 rounded-xl">
-                  <span class="text-xs text-emerald-300">扣除¥3,500月均运营耗材后净收益：</span>
-                  <span id="netProfit" class="text-xl font-bold text-emerald-400">¥ 28,677</span>
+                  <span class="text-xs text-emerald-300">扣除¥3,500投流耗材及兼职助教课时费后净收益：</span>
+                  <span id="netProfit" class="text-xl font-bold text-emerald-400">¥ 41,637</span>
                 </div>
               </div>
               <div class="grid grid-cols-4 gap-2 pt-6 border-t border-white/10 text-xs">
-                <div><div class="text-slate-400">沙龙引流收入</div><div id="rev-l0" class="font-bold mt-0.5">¥1,197</div></div>
-                <div><div class="text-slate-400">L1小班课收入</div><div id="rev-l1" class="font-bold mt-0.5">¥20,480</div></div>
+                <div><div class="text-slate-400">沙龙引流收入</div><div id="rev-l0" class="font-bold mt-0.5">¥1,397</div></div>
+                <div><div class="text-slate-400">L1小班课收入</div><div id="rev-l1" class="font-bold mt-0.5">¥23,040</div></div>
                 <div><div class="text-slate-400">1v1私教收入</div><div id="rev-l2" class="font-bold mt-0.5">¥10,500</div></div>
-                <div><div class="text-slate-400">B端企业服务</div><div id="rev-l3" class="font-bold mt-0.5">¥0</div></div>
+                <div><div class="text-slate-400">B端企业服务</div><div id="rev-l3" class="font-bold mt-0.5">¥12,000</div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- ================= 模块七：课堂PPT蓝图与Prompt弹药库（v7.0 核心新增） ================= -->
+      <div id="tab-mod7" class="space-y-6">
+
+        <!-- 1. 首场L0沙龙15页PPT逐页制作蓝图 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">直接喂给 Gamma / Kimi 生成初稿</span>
+              <h2 class="text-lg font-bold mt-1">首场 L0《2小时周末AI创客沙龙》15页 PPT 逐页视觉与控场蓝图</h2>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-indigo-600">P01 - P03：破冰立人设</div>
+              <div class="text-slate-600 mt-1 leading-relaxed"><b>P1</b> 赛博封面+Suno背景乐<br><b>P2</b> 程序员×雅思名师双背景图<br><b>P3</b> 为什么你用AI全是废话？</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-blue-600">P04 - P06：办公外挂爆破</div>
+              <div class="text-slate-600 mt-1 leading-relaxed"><b>P4</b> 现场采集白领痛点写白板<br><b>P5</b> 四维结构化Prompt公式卡<br><b>P6</b> 现场10分钟生成公文与PPT</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-purple-600">P07 - P09：数字分身炫技</div>
+              <div class="text-slate-600 mt-1 leading-relaxed"><b>P7</b> 唐山同城自媒体高赞拆解<br><b>P8</b> 播放伦敦腔+唐山话数字人<br><b>P9</b> 现场录学员30秒声音克隆</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200 md:col-span-2">
+              <div class="font-bold text-indigo-900">★ P10 - P12：全场高潮 · Vibe Coding 3分钟零代码建站</div>
+              <div class="text-indigo-800 mt-1 leading-relaxed"><b>P10</b> 破除代码恐惧：什么是直觉编程？ | <b>P11</b> 投屏展示《唐山周末吃啥抽签器》二维码，全场掏手机扫码摇签发朋友圈！ | <b>P12</b> 揭秘 GitHub + Cloudflare 0元全球服务器架构。</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
+              <div class="font-bold text-amber-900">P13 - P15：茶歇零压迫逼单</div>
+              <div class="text-amber-800 mt-1 leading-relaxed"><b>P13</b> 路南VIP教室与往期作品墙<br><b>P14</b> L1三大实战班课表与退费保障<br><b>P15</b> 现场立减200+送1v1配环境收款码</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 课堂镇场三大工业级Prompt与课前通知一键复制器 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-md">课堂镇场之宝 · 工业级结构化模板</span>
+              <h2 class="text-lg font-bold mt-1">3大核心课程结构化 Prompt 母版 & 课前电脑预装清单</h2>
+            </div>
+            <button onclick="copyCurrentPrompt()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
+              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前模板
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button onclick="switchPrompt(0)" id="pbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">🏛️ 模板1：体制内/国企“反AI味”公文母版</button>
+            <button onclick="switchPrompt(1)" id="pbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📱 模板2：唐山同城爆款逆向仿写母版</button>
+            <button onclick="switchPrompt(2)" id="pbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💻 模板3：Vibe Coding单页应用生成母版</button>
+            <button onclick="switchPrompt(3)" id="pbtn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎒 模板4：学员课前BYOD电脑环境准备通知</button>
+          </div>
+
+          <textarea id="promptTextarea" rows="10" readonly class="w-full p-4 rounded-xl bg-slate-900 text-emerald-300 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
+          <div id="promptCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 模板已复制到剪贴板！可直接发进飞书学员群或粘贴至 Claude/Cursor 演示。</div>
+        </div>
+
+        <!-- 3. 模块七落地执行 Checklist -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-600 mr-2"></i>模块七：课堂内功打磨与裂变准备清单 (6项)</h3>
+          <div class="space-y-2.5 text-sm" id="checklistMod7"></div>
+        </div>
+
+      </div>
+
     </main>
   </div>
 
   <script>
-    // 模块三：沙龙逐字稿
+    const promptsLibrary = [
+`# Role: 资深政企文字综合专家与业务幕僚
+## Profile
+你拥有15年体制内及大型国企核心部门综合材料撰写经验，极度熟悉公文语境、逻辑递进与数据量化表达，对假大空的“AI翻译腔”深恶痛绝。
+
+## Reference Style (文风锚点)
+请严格拆解并模仿以下我提供的【本单位过往优秀范文片段】的句式长短、小标题对仗格式与动词搭配习惯：
+"""
+[在此处粘贴1-2段你们单位以前写得最好的真实报告段落]
+"""
+
+## Task & Raw Data (核心事实与数据)
+请基于以下零散的业务事实与数据，撰写一份关于【填写材料主题】的【周报/汇报/立项请示】：
+- 核心事实1：[输入零散工作内容或数据]
+- 核心事实2：[输入遇到的问题或下周计划]
+
+## Negative Constraints (负面禁用词铁律 · 必守！)
+1. 严禁出现以下词汇：“总而言之”、“综上所述”、“赋能”、“抓手”、“闭环”、“不仅…而且…”、“如火如荼”、“具有重要意义”。
+2. 严禁无中生有编造数据；凡涉及成果，必须转化为“具体动作 + 量化指标/节点”的句式。
+3. 每个自然段不超过4句话，小标题采用“四字动宾结构 + 破折号具体说明”。`,
+
+`# Role: 唐山本地生活与同城高转化自媒体操盘手
+## Task
+我将为你提供一篇在外地或同行跑出高赞的【爆款对标文案】。请你先拆解它的底层心理钩子（黄金前3秒痛点 + 情绪转折 + 干货获得感 + 评论区互动诱饵），然后结合我在【唐山本地的具体业务】，1:1像素级重写3条不同切入角的同城脚本。
+
+## Input 1: 同行爆款对标原文
+"""
+[粘贴扒下来的高赞文案]
+"""
+
+## Input 2: 我的唐山本地业务信息
+- 我的身份/门店：[例如：唐山路北开AI实验室的前程序员+雅思老师 / 唐山某实体店老板]
+- 目标唐山受众：[例如：唐山25-40岁想提效的上班族或想搞副业的宝妈]
+- 钩子福利/引导动作：[例如：周末来路北糖玩1层喝咖啡参加39.9元实操沙龙]
+
+## Output Requirements
+请输出3个版本的脚本（版本A：痛点扎心型；版本B：反差故事型；版本C：保姆级干货骗收藏型），每个版本需包含：
+1. 5个极具点击欲的小红书标题（巧妙融入“唐山/路北/路南”地域词）。
+2. 分镜画面提示 + 逐字口播台词（口语化，像跟唐山朋友当面聊天，每句不超过15个字）。`,
+
+`# Role: 硅谷全栈独立开发者与UI交互设计师
+## Task
+请帮我编写一个单文件完整可运行的 HTML5 应用（Single-File HTML），要求所有 CSS（使用 Tailwind CSS CDN）、图标库（FontAwesome CDN）和 JavaScript 逻辑全部内联在同一个 index.html 文件中，无需任何外部构建步骤，确保我直接上传到 GitHub + Cloudflare Pages 即可完美运行。
+
+## App Specification (应用需求定义)
+- 应用名称：【例如：唐山装修预算30秒智能计算器 / 某行业客户痛点自测评分系统】
+- 视觉风格：现代极客深色/暖白卡片风，完美适配手机微信内置浏览器竖屏点击。
+- 核心交互功能：
+  1. 顶部展示品牌名称与信任背书标签。
+  2. 中部提供【滑块/单选按钮/输入框】，用户点选后实时动态计算并展示结果卡片。
+  3. 自动使用浏览器 localStorage 保存用户的历史填写记录。
+  4. 底部设置一个醒目的行动号召横幅（CTA），引导用户截图保存或联系主理人微信。
+
+## Constraint
+请直接输出完整、无省略的 HTML 源码，严禁使用 // ...其余代码省略 等占位符。`,
+
+`💻《糖玩 AI 实验室 · 课前笔记本电脑 5 分钟准备清单》
+亲爱的同学，为了保证明天在【路南小市街区教室】上课时，你能第一时间跟上 Key 老师的实操节奏，把全套 AI 外挂真正装进你自己的电脑带回家，请务必在今晚花 5 分钟完成以下 4 项检查：
+1. 电源必带：请携带你的 Windows 或 Mac 笔记本电脑及原装充电器（每张课桌均已配好立式快充魔方插座；如临时不便带电脑，请提前私信助教为你预留教室升级版 SSD 台式备用机）。
+2. 浏览器准备：请确保电脑已安装最新版 Google Chrome 或 Microsoft Edge 浏览器。
+3. 基础软件预装：
+   - 全班通用：请下载安装【飞书 PC 端】（用于接收课堂实时代码片段与提示词模板）。
+   - AIGC副业班必装：请下载安装【剪映专业版 PC 端】。
+   - Vibe Coding创客班必装：请访问 cursor.com 下载安装【Cursor 编辑器】，并准备好一个常用邮箱。
+4. 早到福利：明天开课前 30 分钟，Key 老师与随堂助教将在教室开启“1v1 环境义诊”，遇到任何软件安装问题，早来半小时我们现场帮你全部搞定！`
+    ];
+
+    const docsLibrary = [
+`🎁《2026唐山打工人AI提效与零代码外挂百宝箱》（Key老师精选版）
+1. 公文/报告去AI味主力：Claude 3.7 / DeepSeek R1
+   ★去AI味神级提示词：“请扮演10年经验行业专家，参考上传范文句式撰写。严禁使用‘总而言之、赋能、抓手’等套话，每段必须包含具体动作与数据抓手。”
+2. 秒做汇报PPT与架构图：Kimi PPT助手 + Napkin AI / Mermaid.live（文字10秒转高颜值流程图）。
+3. 零代码开发与智能体：Cursor（用中文大白话写网页/小程序） + Coze扣子（24小时自动抓热点写稿数字员工） + GitHub & Cloudflare Pages（0元全球服务器上线）。
+4. 视觉与24小时数字人分身：即梦AI（精准中文海报/视频） + 闪剪/HeyGen（1分钟克隆你的双语数字人） + RunningHub（2元/小时租用顶级云端显卡跑ComfyUI）。
+---
+☕️ 觉得看列表还是不会装进电脑？每周六下午14:30，带上笔记本电脑来【路北区·糖玩1层 AI实验室】参加2小时破冰沙龙（39.9元含现磨咖啡），Key老师手把手带你跑通！`,
+
+`📄《糖玩 AI 实验室 · 1v1 私人定制陪跑服务确认单》
+委托方姓名：____________  联系电话/微信：____________
+陪跑周期：共 4 周（含4次路南VIP室2小时1v1面授 + 日常微信卡点答疑）
+【本期锁定唯一核心交付目标（MVP清单，勾选1项）】：
+[ ] 方向A（AIGC获客流水线）：个人高清数字人克隆 + 同城爆款文案智能体 + 前10条作品发布。
+[ ] 方向B（零代码工具开发）：基于 Cursor + Cloudflare + 飞书多维表格，完成【__________】网页/工具上线。
+[ ] 方向C（办公自动化知识库）：完成【__________】专属知识库搭建与 2 条 Coze 自动化工作流部署。
+【防扯皮边界三原则】：
+1. 坚持教练带教模式：主理人负责架构设计、核心Prompt与排障，学员需自带电脑参与实操。
+2. 需求锁定原则：严格围绕上述单一 MVP 目标推进，中途不接受推翻立项或无偿追加额外软件外包需求。
+3. 退费保障：首节1v1诊断课结束当天若觉得不匹配，可扣除¥399单次咨询费后退还剩余全款；进入第2讲实操后不予退费。
+学员签字：____________   主理人签字：____________   日期：__________`,
+
+`💬【微信私域加好友 5 分钟锁客三步话术】
+▶ 第1步（通过好友第1分钟自动发）：
+“你好呀！我是Key老师（前软件工程师/前国际学校雅思老师）🤝。很高兴在唐山遇到对AI感兴趣的朋友！上面这份《2026唐山打工人AI外挂百宝箱》先发你留存。对了，你目前主要是想用AI【提升本职办公效率】、【做自媒体副业】，还是想【自己开发个小工具/小程序】呢？”
+▶ 第2步（对方回复后顺势邀约）：
+“太巧了！这正是我们实验室最擅长的方向。自己看十篇教程，不如线下亲手在电脑上跑通一次。本周六下午14:30，我们在【路北区糖玩1层】有一场12人的《2小时AI创客破冰沙龙》，我会现场演示10分钟做PPT、克隆数字人，还会带大家用3分钟亲手上线一个抽签小网站。门票只要39.9元（双人同行59.9元，包一杯现磨胶囊咖啡），你要不要带笔记本过来坐坐？目前还剩最后3个席位。”
+▶ 第3步（发收款码锁座）：
+发送个体户收款码 -> 收款后发路北糖玩定位与停车指南 -> 拉入当期周末沙龙快闪群。`
+    ];
+
     const scriptsData = [
       `“大家下午好，欢迎来到糖玩 AI 实验室！我以前干过两份看似八竿子打不着的全职工作——全职软件工程师，和国际学校雅思英语老师。很多朋友问我：网上卖 9.9 元 AI 课的那么多，为什么要来这儿？因为懂代码的程序员讲课往往不讲人话，非计算机专业听10分钟就想退钱；而网上喊口号的大师自己一行代码没写过，遇到报错就让你百度。所以我把路北和路南两处场地拿出来，用国际学校名师的拆解功力，把硅谷最硬核的 AI 编程和提效工具，翻译成咱们唐山上班族一听就懂、当场能在电脑上跑通的实用技能！”`,
       `“以前你想给小店做个报价计算器或测评网站，找外包至少花 3000 块，还得每年交服务器费。现在大家盯紧大屏幕：我用大白话让 AI 写一个《唐山打工人周末吃啥抽签器》……好，30秒代码出来了！重点来了：我把代码粘贴进 GitHub（免费云端代码库），背后连接着 Cloudflare Pages（全球免费自动施工队）。倒数 10 秒……网站已经自动发布上线了！来，所有人掏出手机扫屏幕右下角二维码，看看你们微信里是不是已经能直接摇签了？在我们的 L1 实战班里，每位同学都会亲手配好这套免费自动上线流水线！”`,
       `“看爽了不代表你就学会了。AI 时代最大的分水岭，是你的电脑里有没有真正跑起这套工作流。下周我们在路南区小市街区正式开启 8 人精品小班实战营。今天凡是在沙龙现场报名的朋友：第一，直接抵扣门票再享早鸟立减 200 元；第二，额外赠送价值 399 元的课前 1v1 电脑环境配置服务；第三，第一节课听完如果不满意，无理由全额退费！大家现在可以一边喝咖啡一边扫码锁定期次名额（支持花呗与信用卡分期），有 1v1 定制需求的朋友可以直接来吧台找我聊！”`
     ];
 
-    // 模块三：三大课程课表
     const coursesData = [
       [
         { t: '第 1 讲：结构化提示词与“反AI味”公文写作', d: '训练模仿你个人文风的专属笔杆子智能体，10分钟搞定国企材料、周报、立项书与会议纪要。' },
@@ -412,38 +525,27 @@
       ]
     ];
 
-    // 模块四：6篇首发爆款脚本库
     const videoScriptsData = [
       `<div class="text-amber-400 font-bold">【脚本 #01 · 全网置顶立人设】《前程序员+前雅思老师，在唐山开了家AI实验室？》（真人实景 · 55秒）</div>
        <div><b>[00-05s 黄金前3秒]</b>（画面：路北糖玩1层推门走入AI沙龙区，灯光亮起）<br>台词：“在唐山，如果把一个前全职软件程序员，和一个前国际学校雅思老师揉在一起，会搞出个什么地方？”</div>
        <div><b>[05-20s 痛点共鸣]</b>（画面：白板画架构图 + 电脑代码与英文AI社区切换）<br>台词：“很多唐山朋友吐槽：网上卖9.9元AI课的大师只会喊口号，遇到报错就装死；找真程序员学吧，满屏代码听10分钟就想困。”</div>
        <div><b>[20-40s 降维方案]</b>（画面：路南教室手把手辅导学员笔记本实操）<br>台词：“所以我把路北糖玩一层和路南小市街区拿出来做了这家【糖玩AI实验室】。用软件工程师的功底帮你把技术兜底，再用国际学校老师讲课的方式，把硅谷最新AI工具翻译成大白话，手把手装进你电脑里。”</div>
        <div><b>[40-55s 行动号召]</b>（画面：胶囊咖啡机前递出一杯咖啡）<br>台词：“不管你是想早下班2小时的上班族，还是想搞副业搓小工具的创业者，每周末下午带着电脑来路北喝杯咖啡，看看2小时AI能怎么重塑你的工作！”</div>`,
-
       `<div class="text-amber-400 font-bold">【脚本 #02 · Vibe Coding炫技】《0元服务器！3分钟用大白话做个唐山周末抽签网站》（数字人+录屏 · 45秒）</div>
        <div><b>[00-05s 视觉钩子]</b>（画面：手机微信打开炫酷的《唐山吃喝抽签器》网页摇签）<br>台词：“找外包做这么一个能发微信群的互动小网站敢收你2000块；今天在唐山糖玩实验室，我教你一分钱服务器不花，3分钟自己用大白话搓出来！”</div>
        <div><b>[05-25s 实操爽点]</b>（画面：录屏展示输入中文需求，AI瞬间生成完整HTML代码）<br>台词：“不需要懂一行英文代码！像点菜一样告诉AI：帮我写个唐山打工人周末去哪儿网站，把唐山宴、小山炸糕、南湖放进去。”</div>
        <div><b>[25-45s 壁垒揭秘与引流]</b>（画面：粘贴进GitHub + Cloudflare 10秒绿灯上线）<br>台词：“重点来了！用我课上教的 GitHub + Cloudflare 免费基建组合拳，粘贴进去倒数10秒，全球可访问的网址直接生成！本周六下午路北沙龙，手把手带你跑通，看置顶锁座！”</div>`,
-
       `<div class="text-amber-400 font-bold">【脚本 #03 · 同城白领痛点】《唐山文字岗自救：别再用AI写“一眼假”的公文了！》（数字人+分屏 · 40秒）</div>
        <div><b>[00-06s 痛点扎心]</b>：“为什么你用AI写的周报、总结和公文，领导看一眼就让你重写？因为你只会搜‘帮我写篇总结’，出来的全是假大空的套话！”</div>
        <div><b>[06-28s 干货对比]</b>：“真正的高手分三步走：第一，把单位过去3年写得最好的5篇范文丢进本地知识库；第二，套用我拆解的【角色+背景数据+文风锚点+负面清单】四维结构化提示词；第三，用Mermaid代码流10秒转成逻辑严密的汇报PPT。”</div>
        <div><b>[28-40s 线下导流]</b>：“这套不泄密、反AI味的办公外挂，我已经整理成唐山打工人专属模板。这周末来路北糖玩实验室坐坐，现场帮你配好，下周一起准点下班！”</div>`,
-
       `<div class="text-amber-400 font-bold">【脚本 #04 · 小红书同城爆款图文】《在唐山路北发现一家神仙AI实验室！周末充电新去处💻》</div>
        <div><b>[首图设计]</b>：路北糖玩1层暖光实景，折叠长桌上摆着打开代码的笔记本与咖啡，大字标题：《唐山周末去哪儿｜在游戏厅里学AI编程是什么体验？》</div>
-       <div><b>[组图编排]</b>：图2主理人电视前演示抽签网 -> 图3学员手机扫码体验数字人 -> 图4路南VIP教室白板架构图 -> 图5周末39.9元沙龙流程单 -> 图6打工人AI工具图谱（骗收藏）。</div>
-       <div><b>[必带标签]</b>：#唐山同城 #唐山周末去哪儿 #唐山路北 #唐山副业 #AI工具 #个人成长 #VibeCoding</div>`,
-
+       <div><b>[组图编排]</b>：图2主理人电视前演示抽签网 -> 图3学员手机扫码体验数字人 -> 图4路南VIP教室白板架构图 -> 图5周末39.9元沙龙流程单 -> 图6打工人AI工具图谱。</div>`,
       `<div class="text-amber-400 font-bold">【脚本 #05 · 副业与商家引流】《镜头恐惧症？前雅思老师教你3分钟克隆中英双语数字人》（真假切换 · 45秒）</div>
-       <div><b>[00-08s 震撼开场]</b>：前4秒你真人说话，第5秒画面一闪变成你的AI数字人分身，无缝切换纯正雅思伦敦腔英语和地道唐山话介绍实体店团购。</div>
-       <div><b>[08-30s 流程拆解]</b>：展示如何在路南录课间用手机拍1分钟底板视频，之后每天只需用AI写好文案，10分钟自动生成一条口播视频，彻底解放出镜焦虑。</div>
-       <div><b>[30-45s 转化钩子]</b>：“想在唐山做同城号获客或搞副业，又不想天天洗头背稿？来我们AIGC实战班或周末沙龙，现场帮你把24小时数字分身克隆出来！”</div>`,
-
+       <div><b>[核心看点]</b>：前4秒真人说话，第5秒切换为AI数字人分身，无缝切换纯正雅思伦敦腔英语和地道唐山话介绍实体店团购，直观震撼同城商家与副业人群。</div>`,
       `<div class="text-amber-400 font-bold">【脚本 #06 · 极客省钱干货】《学AI绘画和视频必须买1万块的电脑？前程序员教你2块钱搞定》（实拍+录屏 · 40秒）</div>
-       <div><b>[00-10s 破除误区]</b>：指着教室里那3台旧台式机：“很多机构忽悠你学ComfyUI和AI视频得先配台一万五的4090显卡主机，作为前程序员，我劝你一分钱冤枉钱都别花！”</div>
-       <div><b>[10-30s 云算力演示]</b>：演示如何用普通轻薄笔记本打开 RunningHub / AutoDL 云端镜像，1小时只要2块钱，秒开顶级显卡算力出大片。</div>
-       <div><b>[30-40s 场地邀约]</b>：“在我们工作室上课，随便带台普通办公本就能跑通全套工业级AI工作流，没带电脑现场还有升级好的备用机等你！”</div>`
+       <div><b>[核心看点]</b>：拿教室里升级SSD后的旧台式机演示如何用2元/小时的 RunningHub 云端算力丝滑跑通 ComfyUI，宣传工作室“自带普通轻薄本就能学”的理念。</div>`
     ];
 
     const defaultChecklistMod1 = [
@@ -466,11 +568,11 @@
 
     const defaultChecklistMod3 = [
       { id: 'm3_c1', text: '【云端看板】跑通 GitHub + Cloudflare Pages 自动部署流水线（已完成！）', done: true },
-      { id: 'm3_c2', text: '【沙龙教具】用 AI 制作《唐山打工人周末吃啥抽签器》网页并部署上线，生成演示二维码', done: false },
+      { id: 'm3_c2', text: '【沙龙教具】将《唐山周末吃啥抽签器 (lucky.html)》部署上线并生成二维码', done: false },
       { id: 'm3_c3', text: '【沙龙课件】完成 L0《2小时周末AI创客沙龙》15页演示 PPT 与随堂赠品工具包整理', done: false },
       { id: 'm3_c4', text: '【样片录制】用数字人平台克隆一段自己用英语+唐山话讲段子的演示视频，放入沙龙PPT', done: false },
       { id: 'm3_c5', text: '【首开班型】在 L1 三大班型中选定第1期首发班型，排定路南教室周末上课日历', done: false },
-      { id: 'm3_c6', text: '【协议打印】打印 10 份《L2 1v1私人陪跑服务协议与MVP需求确认单》备用于路北吧台', done: false }
+      { id: 'm3_c6', text: '【协议打印】在模块六复制《1v1私人陪跑协议确认单》并打印10份备用于路北吧台', done: false }
     ];
 
     const defaultChecklistMod4 = [
@@ -478,8 +580,26 @@
       { id: 'm4_c2', text: '【分身克隆】在路南录课间录制3段1分钟高清底板视频，完成个人数字人分身与双语声音克隆', done: false },
       { id: 'm4_c3', text: '【置顶实拍】真人实景拍摄并剪辑发布《脚本#01：前程序员+前雅思老师》与《脚本#02：3分钟建站》', done: false },
       { id: 'm4_c4', text: '【探店图文】拍摄路北糖玩1层沙龙环境6张实拍图，发布首篇小红书同城探店图文笔记', done: false },
-      { id: 'm4_c5', text: '【私域诱饵】用飞书文档整理好《2026唐山打工人AI外挂百宝箱》链接，设为微信加好友自动欢迎语', done: false },
+      { id: 'm4_c5', text: '【私域诱饵】在模块六复制《打工人AI外挂百宝箱》全文，设为微信加好友自动欢迎语', done: false },
       { id: 'm4_c6', text: '【同城首投】挑选赞藏最高的首发笔记，使用75元小红书薯条定向唐山22-42岁人群测试私信成本', done: false }
+    ];
+
+    const defaultChecklistMod5 = [
+      { id: 'm5_c1', text: '【飞书建表】按模块五架构搭建《飞书多维表格4表联动系统》（线索池/排课表/作品墙/收支表）', done: false },
+      { id: 'm5_c2', text: '【扫码表单】生成“周末沙龙报名与课前问卷”飞书收集表二维码，打印立牌放在路北吧台', done: false },
+      { id: 'm5_c3', text: '【作品展墙】创建工作室线上《唐山学员AI创客作品墙》页面，预填入3个你自己的示范项目', done: false },
+      { id: 'm5_c4', text: '【助教物色】在首期L1实战营学员中物色1-2名动手快、表达好的种子学员，邀请担任随堂助教', done: false },
+      { id: 'm5_c5', text: '【权限隔离】将核心课件迁入飞书知识库并开启“禁止下载/导出副本”权限，保障核心知识产权', done: false },
+      { id: 'm5_c6', text: '【B端手册】制作1份《唐山企业AI降本增效赋能方案（同城获客/外贸知识库/公文内训）》PDF画册', done: false }
+    ];
+
+    const defaultChecklistMod7 = [
+      { id: 'm7_c1', text: '【PPT生成】按模块七15页蓝图，使用 Gamma/Kimi 生成首场沙龙PPT并嵌入抽签器二维码', done: false },
+      { id: 'm7_c2', text: '【Prompt建库】将模块七的3大工业级结构化Prompt模板存入飞书知识库，供课堂一键发给学员', done: false },
+      { id: 'm7_c3', text: '【课前通知】将《BYOD课前笔记本电脑5分钟准备清单》配置进飞书排课表的24小时自动提醒中', done: false },
+      { id: 'm7_c4', text: '【晒单诱饵】整理好《50个拿来即用的Coze工作流与提示词包》，作为沙龙第85分钟晒朋友圈奖品', done: false },
+      { id: 'm7_c5', text: '【裂变海报】用即梦AI制作一张“老学员推荐朋友报小班课立返¥150现金红包”的社群专属海报', done: false },
+      { id: 'm7_c6', text: '【全真彩排】在路北糖玩1层大电视上完整计时串讲一遍120分钟沙龙流程，确保卡点丝滑', done: false }
     ];
 
     const defaultProcurement = [
@@ -499,8 +619,7 @@
       { id: 'p14', cat: '冷启动投流', name: '小红书聚光/薯条 + 抖音同城DOU+ 首期测试金', price: 3000, checked: true }
     ];
 
-    // 兼容合并读取旧版本缓存
-    let saved = JSON.parse(localStorage.getItem('ts_ai_studio_v4')) || JSON.parse(localStorage.getItem('ts_ai_studio_v3')) || JSON.parse(localStorage.getItem('ts_ai_studio_v2')) || {};
+    let saved = JSON.parse(localStorage.getItem('ts_ai_studio_v7')) || JSON.parse(localStorage.getItem('ts_ai_studio_v6')) || JSON.parse(localStorage.getItem('ts_ai_studio_v5')) || {};
     let state = {
       selectedBrandIndex: saved.selectedBrandIndex ?? 0,
       brandName: saved.brandName || '糖玩 AI 实验室 (TangPlay AI Lab)',
@@ -508,11 +627,13 @@
       checklistMod2: saved.checklistMod2 || defaultChecklistMod2,
       checklistMod3: saved.checklistMod3 || defaultChecklistMod3,
       checklistMod4: saved.checklistMod4 || defaultChecklistMod4,
+      checklistMod5: saved.checklistMod5 || defaultChecklistMod5,
+      checklistMod7: saved.checklistMod7 || defaultChecklistMod7,
       procurement: saved.procurement || defaultProcurement
     };
 
     function saveState() {
-      localStorage.setItem('ts_ai_studio_v4', JSON.stringify(state));
+      localStorage.setItem('ts_ai_studio_v7', JSON.stringify(state));
       renderUI();
     }
 
@@ -532,6 +653,42 @@
       const item = state.procurement.find(i => i.id === id);
       if (item) item.checked = !item.checked;
       saveState();
+    }
+
+    function switchPrompt(idx) {
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById('pbtn-' + i);
+        if (btn) btn.className = i === idx
+          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
+          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+      }
+      document.getElementById('promptTextarea').value = promptsLibrary[idx];
+      document.getElementById('promptCopyToast').classList.add('hidden');
+    }
+
+    function copyCurrentPrompt() {
+      const el = document.getElementById('promptTextarea');
+      el.select();
+      navigator.clipboard.writeText(el.value);
+      document.getElementById('promptCopyToast').classList.remove('hidden');
+    }
+
+    function switchDoc(idx) {
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById('dbtn-' + i);
+        if (btn) btn.className = i === idx
+          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
+          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+      }
+      document.getElementById('docTextarea').value = docsLibrary[idx];
+      document.getElementById('docCopyToast').classList.add('hidden');
+    }
+
+    function copyCurrentDoc() {
+      const el = document.getElementById('docTextarea');
+      el.select();
+      navigator.clipboard.writeText(el.value);
+      document.getElementById('docCopyToast').classList.remove('hidden');
     }
 
     function switchScript(idx) {
@@ -607,6 +764,8 @@
       renderChecklist('checklistMod2', 'checklistMod2');
       renderChecklist('checklistMod3', 'checklistMod3');
       renderChecklist('checklistMod4', 'checklistMod4');
+      renderChecklist('checklistMod5', 'checklistMod5');
+      renderChecklist('checklistMod7', 'checklistMod7');
 
       const pContainer = document.getElementById('procurementContainer');
       if (pContainer) {
@@ -634,16 +793,22 @@
         document.getElementById('budgetRemainBox').innerText = `距离5万预算上限还余 ¥${(50000 - totalCost).toLocaleString()}`;
       }
 
-      // 计算总体进度（模块1+2+3+4共占总进度的85%）
-      const allChecks = [...state.checklistMod1, ...state.checklistMod2, ...state.checklistMod3, ...state.checklistMod4];
+      const allChecks = [
+        ...state.checklistMod1,
+        ...state.checklistMod2,
+        ...state.checklistMod3,
+        ...state.checklistMod4,
+        ...state.checklistMod5,
+        ...state.checklistMod7
+      ];
       const doneCount = allChecks.filter(i => i.done).length;
-      const pct = Math.round((doneCount / allChecks.length) * 85);
+      const pct = Math.round((doneCount / allChecks.length) * 100);
       document.getElementById('globalProgressBar').style.width = pct + '%';
-      document.getElementById('globalProgressText').innerText = pct + '%';
+      document.getElementById('globalProgressText').innerText = `${pct}% (${doneCount}/${allChecks.length})`;
     }
 
     function switchTab(tabId) {
-      ['mod1', 'mod2', 'mod3', 'mod4', 'mod5', 'mod6'].forEach(id => {
+      ['mod1', 'mod2', 'mod3', 'mod4', 'mod5', 'mod6', 'mod7'].forEach(id => {
         document.getElementById('tab-' + id).classList.add('hidden');
         const btn = document.getElementById('btn-' + id);
         btn.classList.remove('tab-active');
@@ -707,7 +872,8 @@
       const r2 = l2 * 3500;
       const r3 = l3 * 12000;
       const total = r0 + r1 + r2 + r3;
-      const net = Math.max(0, total - 3500);
+      const assistantCost = Math.round(l1 * 100);
+      const net = Math.max(0, total - 3500 - assistantCost);
 
       document.getElementById('rev-l0').innerText = '¥' + r0.toLocaleString();
       document.getElementById('rev-l1').innerText = '¥' + r1.toLocaleString();
@@ -719,7 +885,7 @@
 
     function resetAllData() {
       if (confirm('确定要重置看板的所有勾选与自定义状态吗？')) {
-        localStorage.removeItem('ts_ai_studio_v4');
+        localStorage.removeItem('ts_ai_studio_v7');
         location.reload();
       }
     }
@@ -728,6 +894,8 @@
     switchScript(0);
     switchCourse(2);
     switchVideoScript(0);
+    switchDoc(0);
+    switchPrompt(0);
     calcRevenue();
   </script>
 </body>

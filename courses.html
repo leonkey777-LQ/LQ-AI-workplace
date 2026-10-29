@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>糖玩 AI 实验室 · 深度教研与课堂实操门户</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .lesson-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+    .projector-mode { font-size: 118% !important; }
+  </style>
+</head>
+<body id="appBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- 顶部导航栏 -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold shadow-lg">
+          <i class="fa-solid fa-book-open-reader"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课程教研与实操门户</h1>
+            <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">已载入 1 讲</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">前软件工程师 × 国际学校雅思名师主理 | 路南小市街区教室 & 路北沙龙投屏专用系统</p>
+        </div>
+      </div>
+
+      <!-- 工具按钮区 -->
+      <div class="flex items-center space-x-2.5">
+        <select id="courseFilter" onchange="renderSidebar()" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+          <option value="ALL">📚 全部课程模块</option>
+          <option value="L0">⚡ L0 周末破冰沙龙</option>
+          <option value="A">💼 班型A：AI职场提效班 (4讲)</option>
+          <option value="B">🎬 班型B：AIGC自媒体副业班 (5讲)</option>
+          <option value="C">💻 班型C：Vibe Coding创客班 (6讲)</option>
+          <option value="B2B">🏢 L3 唐山B端企业内训专题</option>
+        </select>
+
+        <button onclick="toggleProjector()" id="projBtn" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-tv mr-1.5"></i>教室投屏放大
+        </button>
+
+        <a href="index.html" class="text-xs bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-gauge-high mr-1.5"></i>返回老板看板
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体两栏布局 -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- 左侧：课程章节目录树 -->
+    <aside class="lg:col-span-3 space-y-4">
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
+        <div class="flex justify-between items-center mb-3 px-1">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">每日深度教研目录</h2>
+          <span class="text-[11px] text-blue-400">自动读取 course_data.js</span>
+        </div>
+        <div id="lessonList" class="space-y-1.5 max-h-[70vh] overflow-y-auto pr-1">
+          <!-- JS 动态渲染课表 -->
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-indigo-950/80 to-slate-900 rounded-2xl p-4 border border-indigo-800/40 text-xs space-y-2">
+        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>每日 5 秒增量更新指南</div>
+        <p class="text-slate-400 leading-relaxed">每天早上 9:00 收到新课程模块后，无需修改本网页，直接打开 GitHub 上的 <code class="text-emerald-300">course_data.js</code>，将新代码粘贴到文件最底部即可！</p>
+      </div>
+    </aside>
+
+    <!-- 右侧：单节课程深度讲义与课堂投屏工作台 -->
+    <main class="lg:col-span-9 space-y-6" id="lessonContentArea">
+      <!-- JS 动态渲染当前选中的课程完整内容 -->
+    </main>
+
+  </div>
+
+  <!-- 引入增量课程数据包 -->
+  <script src="course_data.js"></script>
+
+  <script>
+    let currentLessonId = null;
+    let isProjector = false;
+
+    function toggleProjector() {
+      isProjector = !isProjector;
+      const body = document.getElementById('appBody');
+      const btn = document.getElementById('projBtn');
+      if (isProjector) {
+        body.classList.add('projector-mode');
+        btn.className = 'text-xs bg-amber-500 text-slate-950 px-3 py-2 rounded-xl font-bold transition flex items-center';
+      } else {
+        body.classList.remove('projector-mode');
+        btn.className = 'text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center';
+      }
+    }
+
+    function renderSidebar() {
+      const modules = window.COURSE_MODULES || [];
+      document.getElementById('totalLessonsBadge').innerText = `已载入 ${modules.length} 讲`;
+      const filter = document.getElementById('courseFilter').value;
+      const listEl = document.getElementById('lessonList');
+      listEl.innerHTML = '';
+
+      const filtered = modules.filter(m => filter === 'ALL' || m.category === filter);
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">该分类下暂未追加课程数据，等待明日9:00自动教研推送...</div>`;
+        return;
+      }
+
+      if (!currentLessonId || !filtered.find(m => m.id === currentLessonId)) {
+        currentLessonId = filtered[filtered.length - 1].id; // 默认选中最新更新的一讲
+      }
+
+      filtered.forEach(item => {
+        const active = item.id === currentLessonId;
+        const btn = document.createElement('button');
+        btn.onclick = () => { currentLessonId = item.id; renderSidebar(); renderLesson(item); };
+        btn.className = `w-full text-left p-3 rounded-xl transition flex flex-col gap-1 ${active ? 'lesson-active' : 'bg-slate-800/50 hover:bg-slate-800 text-slate-300 border border-slate-800'}`;
+        btn.innerHTML = `
+          <div class="flex items-center justify-between w-full">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${active ? 'bg-white/20 text-white' : 'bg-slate-700 text-slate-300'}">${item.badge}</span>
+            <span class="text-[10px] opacity-75">${item.updateDate || '最新教研'}</span>
+          </div>
+          <div class="font-bold text-xs sm:text-sm leading-snug mt-0.5">${item.title}</div>
+        `;
+        listEl.appendChild(btn);
+      });
+
+      const activeObj = modules.find(m => m.id === currentLessonId) || filtered[0];
+      if (activeObj) renderLesson(activeObj);
+    }
+
+    function copyText(text, btnId) {
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById(btnId);
+      const old = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i>已复制！';
+      setTimeout(() => { btn.innerHTML = old; }, 1800);
+    }
+
+    function renderLesson(lesson) {
+      const container = document.getElementById('lessonContentArea');
+      if (!lesson) return;
+
+      // 渲染实操步骤
+      const stepsHtml = (lesson.steps || []).map((s, idx) => `
+        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-blue-400 text-sm">Step ${idx + 1}：${s.title}</span>
+            <span class="text-xs bg-slate-900 text-slate-400 px-2.5 py-0.5 rounded-full">${s.time || ''}</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${s.detail}</p>
+        </div>
+      `).join('');
+
+      // 渲染工业级 Prompt 卡片
+      const promptsHtml = (lesson.prompts || []).map((p, idx) => {
+        const btnId = `copy-p-${idx}`;
+        const safePrompt = encodeURIComponent(p.content);
+        return `
+          <div class="rounded-xl bg-slate-950 border border-emerald-500/30 p-4 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-emerald-400 text-xs sm:text-sm"><i class="fa-solid fa-terminal mr-1.5"></i>${p.name}</span>
+              <button id="${btnId}" onclick="copyText(decodeURIComponent('${safePrompt}'), '${btnId}')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shrink-0">
+                <i class="fa-regular fa-copy mr-1"></i>一键复制 Prompt
+              </button>
+            </div>
+            <pre class="text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed bg-slate-900 p-3.5 rounded-lg border border-slate-800 overflow-x-auto">${p.content}</pre>
+          </div>
+        `;
+      }).join('');
+
+      // 渲染常见排障 FAQ
+      const faqHtml = (lesson.troubleshooting || []).map(f => `
+        <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs sm:text-sm space-y-1">
+          <div class="font-bold text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>课堂高频卡点：${f.q}</div>
+          <div class="text-slate-300 leading-relaxed pl-5">💡 <b>秒解方案：</b>${f.a}</div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <!-- 课程头部卡片 -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-lg">${lesson.badge}</span>
+              <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i>标准课时：${lesson.duration || '120 分钟'}</span>
+            </div>
+            <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg">
+              🎯 课堂交付物：${lesson.deliverable || '学员自带电脑当场跑通成品'}
+            </span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">${lesson.title}</h2>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <b class="text-amber-300">🔍 全网最新趋势与学情洞察：</b>${lesson.insight}
+          </p>
+        </div>
+
+        <!-- 1. 名师破冰引入逐字稿 -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-microphone-lines text-blue-400 mr-2"></i>一、 名师破冰引入与降维比喻（前 15 分钟逐字稿）</h3>
+          <div class="p-4 rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950/60 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">${lesson.openingScript}</div>
+        </div>
+
+        <!-- 2. 手把手分步实操 SOP -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i>二、 课堂核心工具实操步骤（BYOD 投屏跟练流）</h3>
+          <div class="space-y-3">${stepsHtml}</div>
+        </div>
+
+        <!-- 3. 随堂工业级 Prompt 与代码模板 -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 mr-2"></i>三、 随堂工业级 Prompt / 代码模板库（点击一键复制发飞书群）</h3>
+          <div class="space-y-4">${promptsHtml}</div>
+        </div>
+
+        <!-- 4. 课堂高频报错排障与课后作业 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+            <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>四、 助教巡场排障指南（防卡壳锦囊）</h3>
+            <div class="space-y-2.5">${faqHtml}</div>
+          </div>
+          <div class="md:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md">五、 随堂实战考核 & 晒单作业</span>
+              <h4 class="font-bold text-base text-white pt-1">本讲结课必交作业</h4>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${lesson.homework}</p>
+            </div>
+            <div class="pt-3 border-t border-white/10 text-xs text-amber-300">
+              💡 <b>助教提醒：</b>请督促学员在离场前将作品截图发至班级飞书群，择优收录入《唐山AI创客作品墙》。
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.onload = renderSidebar;
+  </script>
+</body>
+</html>

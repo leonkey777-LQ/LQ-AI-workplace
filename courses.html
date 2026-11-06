@@ -25,7 +25,7 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课程教研与实操门户</h1>
-            <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">已载入 1 讲</span>
+            <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">已载入 0 讲</span>
           </div>
           <p class="text-xs text-slate-400 hidden sm:block">前软件工程师 × 国际学校雅思名师主理 | 路南小市街区教室 & 路北沙龙投屏专用系统</p>
         </div>
@@ -61,7 +61,7 @@
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
         <div class="flex justify-between items-center mb-3 px-1">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">每日深度教研目录</h2>
-          <span class="text-[11px] text-blue-400">自动读取 course_data.js</span>
+          <span class="text-[11px] text-blue-400">读取 course_data.js</span>
         </div>
         <div id="lessonList" class="space-y-1.5 max-h-[70vh] overflow-y-auto pr-1">
           <!-- JS 动态渲染课表 -->
@@ -110,12 +110,12 @@
 
       const filtered = modules.filter(m => filter === 'ALL' || m.category === filter);
       if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">该分类下暂未追加课程数据，等待明日9:00自动教研推送...</div>`;
+        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">该分类下暂未追加课程数据，等待每日9:00自动教研推送...</div>`;
         return;
       }
 
       if (!currentLessonId || !filtered.find(m => m.id === currentLessonId)) {
-        currentLessonId = filtered[filtered.length - 1].id; // 默认选中最新更新的一讲
+        currentLessonId = filtered[0].id;
       }
 
       filtered.forEach(item => {
@@ -149,7 +149,6 @@
       const container = document.getElementById('lessonContentArea');
       if (!lesson) return;
 
-      // 渲染实操步骤
       const stepsHtml = (lesson.steps || []).map((s, idx) => `
         <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-1.5">
           <div class="flex items-center justify-between">
@@ -160,7 +159,6 @@
         </div>
       `).join('');
 
-      // 渲染工业级 Prompt 卡片
       const promptsHtml = (lesson.prompts || []).map((p, idx) => {
         const btnId = `copy-p-${idx}`;
         const safePrompt = encodeURIComponent(p.content);
@@ -177,7 +175,6 @@
         `;
       }).join('');
 
-      // 渲染常见排障 FAQ
       const faqHtml = (lesson.troubleshooting || []).map(f => `
         <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs sm:text-sm space-y-1">
           <div class="font-bold text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>课堂高频卡点：${f.q}</div>
@@ -186,7 +183,6 @@
       `).join('');
 
       container.innerHTML = `
-        <!-- 课程头部卡片 -->
         <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
@@ -203,25 +199,21 @@
           </p>
         </div>
 
-        <!-- 1. 名师破冰引入逐字稿 -->
         <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
           <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-microphone-lines text-blue-400 mr-2"></i>一、 名师破冰引入与降维比喻（前 15 分钟逐字稿）</h3>
           <div class="p-4 rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950/60 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">${lesson.openingScript}</div>
         </div>
 
-        <!-- 2. 手把手分步实操 SOP -->
         <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
           <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i>二、 课堂核心工具实操步骤（BYOD 投屏跟练流）</h3>
           <div class="space-y-3">${stepsHtml}</div>
         </div>
 
-        <!-- 3. 随堂工业级 Prompt 与代码模板 -->
         <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
           <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 mr-2"></i>三、 随堂工业级 Prompt / 代码模板库（点击一键复制发飞书群）</h3>
           <div class="space-y-4">${promptsHtml}</div>
         </div>
 
-        <!-- 4. 课堂高频报错排障与课后作业 -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
             <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>四、 助教巡场排障指南（防卡壳锦囊）</h3>

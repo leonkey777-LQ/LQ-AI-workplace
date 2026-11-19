@@ -3,1112 +3,503 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>唐山O2O个人AI工作室 · 创业全景指挥看板 v10.0 (全景大师终极版)</title>
+  <title>糖玩 AI 实验室 · 深度教研与课堂实操门户 v2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
-    .tab-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
-    .subtab-active { background-color: #1e293b; color: #fff; }
+    .lesson-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3); }
+    .projector-mode { font-size: 118% !important; }
+    .projector-mode pre { font-size: 0.95rem !important; line-height: 1.75 !important; }
+
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* 打印 / 导出 PDF 讲义专用白底省墨样式 */
+    @media print {
+      body { background: #ffffff !important; color: #0f172a !important; font-size: 12pt !important; }
+      header, aside, .no-print { display: none !important; }
+      main { grid-column: span 12 / span 12 !important; width: 100% !important; max-width: 100% !important; }
+      .print-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; break-inside: avoid; box-shadow: none !important; }
+      .print-card h2, .print-card h3, .print-card h4, .print-card p, .print-card div, .print-card span { color: #0f172a !important; }
+      pre { background: #f8fafc !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; white-space: pre-wrap !important; word-break: break-word !important; }
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body id="appBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
-  <!-- 顶部全局状态栏 -->
-  <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
+  <!-- 顶部导航栏 -->
+  <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 flex items-center justify-center text-xl font-bold text-slate-950 shadow-inner shrink-0">
-          <i class="fa-solid fa-crown"></i>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold shadow-lg shrink-0">
+          <i class="fa-solid fa-book-open-reader"></i>
         </div>
         <div>
           <div class="flex items-center flex-wrap gap-2">
-            <h1 id="headerBrandName" class="text-base sm:text-lg font-bold tracking-tight">糖玩 AI 实验室 (TangPlay AI Lab)</h1>
-            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] px-2.5 py-0.5 rounded-full font-bold">👑 v10.0 全景大师终极版</span>
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课堂教研门户</h1>
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v2.0</span>
+            <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">已载入 0 讲</span>
+            <span id="taughtProgressBadge" class="hidden sm:inline-block bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">已备课 0/0</span>
           </div>
-          <p class="text-xs text-slate-400 mt-0.5 hidden sm:block">前全职软件工程师 × 国际学校雅思教师 | 路北沙龙引流 + 路南深度交付 + B端企业赋能闭环</p>
+          <p class="text-xs text-slate-400 hidden lg:block mt-0.5">前软件工程师 × 国际学校雅思名师主理 | 路南小市街区教室 & 路北沙龙投屏专用系统</p>
         </div>
       </div>
 
-      <!-- 总体进度与跨设备同步工具栏 -->
-      <div class="flex items-center space-x-4 sm:space-x-6 text-sm">
-        <div>
-          <div class="text-[11px] text-slate-400">全周期54项落地总进度</div>
-          <div class="flex items-center space-x-2 mt-1">
-            <div class="w-24 sm:w-28 h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div id="globalProgressBar" class="bg-emerald-400 h-full transition-all duration-300" style="width: 10%"></div>
-            </div>
-            <span id="globalProgressText" class="font-bold text-emerald-400 text-xs">10%</span>
-          </div>
-        </div>
+      <!-- 工具按钮区 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <select id="courseFilter" onchange="renderSidebar()" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
+          <option value="ALL">📚 全部课程模块</option>
+          <option value="L0">⚡ L0 周末破冰沙龙</option>
+          <option value="A">💼 班型A：AI职场提效班 (4讲)</option>
+          <option value="B">🎬 班型B：AIGC自媒体副业班 (5讲)</option>
+          <option value="C">💻 班型C：Vibe Coding创客班 (6讲)</option>
+          <option value="B2B">🏢 L3 唐山B端企业内训专题 (4讲)</option>
+        </select>
 
-        <div class="hidden md:block border-l border-slate-700 pl-5">
-          <div class="text-[11px] text-slate-400">首期已选采购预算</div>
-          <div id="headerBudgetTotal" class="font-bold text-amber-400 text-sm mt-0.5">¥ 17,900</div>
-        </div>
+        <button onclick="toggleStudentMode()" id="studentModeBtn" title="开启后自动隐藏讲师逐字稿与助教排障内参，防止投屏剧透" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-eye-slash mr-1.5"></i>学员投屏纯净版
+        </button>
 
-        <div class="flex items-center space-x-2">
-          <a href="courses.html" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-sm flex items-center">
-            <i class="fa-solid fa-book-open-reader mr-1.5"></i>课程门户
-          </a>
-          <button onclick="openSyncModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-sm flex items-center">
-            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>跨端同步
-          </button>
-          <button onclick="resetAllData()" title="重置数据" class="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1.5 rounded-lg transition">
-            <i class="fa-solid fa-rotate-right"></i>
-          </button>
-        </div>
+        <button onclick="toggleProjector()" id="projBtn" title="放大全屏字号，适配教室100寸投影幕布" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-tv mr-1.5"></i>字号放大
+        </button>
+
+        <button onclick="window.print()" title="打印当前课程或另存为PDF纸质讲义" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition hidden md:flex items-center">
+          <i class="fa-solid fa-print mr-1.5"></i>导出PDF
+        </button>
+
+        <a href="index.html" class="text-xs bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-gauge-high mr-1.5"></i>老板看板
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- 跨设备状态码同步弹窗 -->
-  <div id="syncModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-base text-slate-900 flex items-center"><i class="fa-solid fa-mobile-screen-button text-indigo-600 mr-2"></i>手机 / 电脑跨设备进度同步</h3>
-        <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <p class="text-xs text-slate-500 leading-relaxed">在手机上勾选进度后，点击<b>“复制当前状态码”</b>发到微信，在电脑上粘贴并点击<b>“导入恢复”</b>即可1秒同步全部54项清单与预算状态！</p>
-      <div>
-        <label class="text-xs font-bold text-slate-700 block mb-1">状态同步码 (Base64)：</label>
-        <textarea id="syncCodeInput" rows="3" class="w-full text-xs font-mono p-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:outline-none focus:border-indigo-500" placeholder="在此处粘贴来自另一台设备的状态码..."></textarea>
-      </div>
-      <div class="flex space-x-3 pt-1">
-        <button onclick="copySyncCode()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl transition">
-          <i class="fa-regular fa-copy mr-1"></i>复制当前状态码
-        </button>
-        <button onclick="importSyncCode()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 rounded-xl transition">
-          <i class="fa-solid fa-file-import mr-1"></i>导入并恢复进度
-        </button>
-      </div>
-      <div id="syncMsg" class="text-center text-xs font-medium text-emerald-600 hidden"></div>
-    </div>
+  <!-- 学员投屏纯净模式提示条 -->
+  <div id="studentModeBanner" class="hidden bg-emerald-950/90 border-b border-emerald-500/30 text-emerald-200 text-xs py-2 px-4 text-center no-print">
+    <i class="fa-solid fa-shield-halved mr-1.5 text-emerald-400"></i>
+    当前已开启 <b>【学员投屏纯净模式】</b>：讲师开场逐字稿、助教排障话术与内部转化锦囊已自动隐藏，可放心投屏教室大电视！
+    <button onclick="toggleStudentMode()" class="ml-3 underline text-white hover:text-emerald-300 font-bold">退出纯净模式</button>
   </div>
 
-  <!-- 主体内容区 -->
+  <!-- 主体两栏布局 -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- 左侧：10大模块全景导航栏 -->
-    <aside class="lg:col-span-3 space-y-4">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 px-2">创业全景 10 大满贯模块</h2>
-        <nav class="space-y-1">
-          <a href="courses.html" class="w-full text-left px-3 py-2.5 mb-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-chalkboard w-5 mr-1.5"></i>进入课堂实操与教研门户</span>
-            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-          </a>
-          <button onclick="switchTab('mod1')" id="btn-mod1" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-compass w-5 mr-1.5"></i>1. 市场调研与品牌立项</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
+    <!-- 左侧：课程章节目录树 -->
+    <aside class="lg:col-span-3 space-y-4 no-print">
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">课程教研目录</h2>
+          <span class="text-[11px] text-blue-400 font-mono">course_data.js</span>
+        </div>
+
+        <!-- 实时关键词搜索框 -->
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass text-slate-500 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="searchInput" type="text" oninput="renderSidebar()" placeholder="搜索课名 / Prompt / 卡点..." class="w-full bg-slate-950 border border-slate-700/80 focus:border-blue-500 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none">
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-slate-500 hover:text-slate-300 text-xs absolute right-2.5 top-1/2 -translate-y-1/2">
+            <i class="fa-solid fa-circle-xmark"></i>
           </button>
-          <button onclick="switchTab('mod2')" id="btn-mod2" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-couch w-5 mr-1.5"></i>2. 双场地改造与采购表</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod3')" id="btn-mod3" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-chalkboard-user w-5 mr-1.5"></i>3. 阶梯课程研发与逐字稿</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod4')" id="btn-mod4" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-video w-5 mr-1.5"></i>4. 线上起号矩阵与脚本库</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod5')" id="btn-mod5" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-users-gear w-5 mr-1.5"></i>5. 运营SOP与助教合伙制</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod6')" id="btn-mod6" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-briefcase w-5 mr-1.5"></i>6. 实战文书与财务模拟器</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod7')" id="btn-mod7" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-wand-magic-sparkles w-5 mr-1.5"></i>7. 课堂PPT蓝图与Prompt库</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod8')" id="btn-mod8" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-laptop-code w-5 mr-1.5"></i>8. VibeCoding教案与源码库</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod9')" id="btn-mod9" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-fire-flame-curved w-5 mr-1.5"></i>9. 职场与AIGC双课教案库</span>
-            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">完备</span>
-          </button>
-          <button onclick="switchTab('mod10')" id="btn-mod10" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between tab-active">
-            <span class="flex items-center"><i class="fa-solid fa-building-shield w-5 mr-1.5"></i>10. B端私享会与企业合同库</span>
-            <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">v10 终章</span>
-          </button>
-        </nav>
+        </div>
+
+        <div id="lessonList" class="space-y-1.5 max-h-[64vh] overflow-y-auto pr-1">
+          <!-- JS 动态渲染课表 -->
+        </div>
       </div>
 
-      <!-- B端高客单收割铁律卡 -->
-      <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-4 text-white shadow-sm border border-amber-500/30">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded">B端大单收割机</span>
-          <i class="fa-solid fa-gem text-amber-400"></i>
-        </div>
-        <p class="text-xs text-slate-300 leading-relaxed mt-1">
-          不要去陌拜推销！每月最后一个周五下午，在路北办1场<b>《唐山小老板AI降本闭门私享会》</b>（限8人），现场演示<b>“外贸多语种知识库+同城团购智能体”</b>，70%首付当场签单！
-        </p>
+      <div class="bg-gradient-to-br from-indigo-950/80 to-slate-900 rounded-2xl p-4 border border-indigo-800/40 text-xs space-y-2">
+        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>教研门户使用提示</div>
+        <ul class="text-slate-400 leading-relaxed space-y-1 list-disc pl-4">
+          <li>教室大屏投屏前，点击顶部 <b class="text-emerald-300">学员投屏纯净版</b> 即可隐藏逐字稿防剧透。</li>
+          <li>每讲新增数据时，直接追加到 GitHub 的 <code class="text-emerald-300">course_data.js</code> 末尾即可自动热更新。</li>
+        </ul>
       </div>
     </aside>
 
-    <!-- 右侧：核心工作台面板 -->
-    <main class="lg:col-span-9 space-y-6">
-
-      <!-- ================= 模块一内容 ================= -->
-      <div id="tab-mod1" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md">主理人决策项 #01</span>
-          <h2 class="text-lg font-bold mt-1 mb-4">点选确认你的工作室品牌名称</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div onclick="selectBrand('糖玩 AI 实验室 (TangPlay AI Lab)', 0)" id="brand-0" class="cursor-pointer p-4 rounded-xl border-2 transition">
-              <div class="flex justify-between items-start"><h3 class="font-bold text-slate-900">方案A：糖玩 AI 实验室 (TangPlay AI Lab)</h3><span class="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">推荐</span></div>
-              <p class="text-xs text-slate-600 mt-2">Slogan：“像玩游戏一样掌握 AI，做自己的超级个体。”</p>
-            </div>
-            <div onclick="selectBrand('译码 AI 工坊 (Decode AI Studio)', 1)" id="brand-1" class="cursor-pointer p-4 rounded-xl border-2 transition">
-              <div class="flex justify-between items-start"><h3 class="font-bold text-slate-900">方案B：译码 AI 工坊 (Decode AI Studio)</h3><span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">双基因</span></div>
-              <p class="text-xs text-slate-600 mt-2">Slogan：“把前沿科技译成人话，用 AI 代码重塑效率。”</p>
-            </div>
-            <div onclick="selectBrand('超级个体 AI 社 (OPC AI Club)', 2)" id="brand-2" class="cursor-pointer p-4 rounded-xl border-2 transition">
-              <div class="flex justify-between items-start"><h3 class="font-bold text-slate-900">方案C：超级个体 AI 社 (OPC AI Club)</h3><span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">副业向</span></div>
-              <p class="text-xs text-slate-600 mt-2">Slogan：“一个人 + 一套 AI 工作流 = 一支精英团队。”</p>
-            </div>
-            <div onclick="selectBrand('知行 AI 创客空间 (ZhiXing AI)', 3)" id="brand-3" class="cursor-pointer p-4 rounded-xl border-2 transition">
-              <div class="flex justify-between items-start"><h3 class="font-bold text-slate-900">方案D：知行 AI 创客空间</h3><span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">政企向</span></div>
-              <p class="text-xs text-slate-600 mt-2">Slogan：“知前沿 AI 之道，行降本增效之实。”</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i>模块一：市场与品牌立项执行清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod1"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块二内容 ================= -->
-      <div id="tab-mod2" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
-            <div>
-              <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">主理人决策项 #02 · 采购预算收银台</span>
-              <h3 class="font-bold text-lg mt-1">双场地软装、硬件升级与AI工具采购总表</h3>
-            </div>
-            <div class="bg-slate-900 text-white px-5 py-3 rounded-xl text-right">
-              <div class="text-xs text-slate-400">当前勾选采购合计</div>
-              <div id="procurementTotalBox" class="text-2xl font-extrabold text-amber-400">¥ 17,900</div>
-              <div id="budgetRemainBox" class="text-xs text-emerald-400 mt-0.5">距离5万预算上限还余 ¥32,100</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm" id="procurementContainer"></div>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-screwdriver-wrench text-blue-600 mr-2"></i>模块二：场地微改与硬件调试执行清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod2"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块三内容 ================= -->
-      <div id="tab-mod3" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md">L0 引流破冰层 · 路北糖玩1层</span>
-          <h2 class="text-lg font-bold mt-1 mb-4">《2小时周末AI创客沙龙》逐字稿提词器</h2>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchScript(0)" id="sbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">🎤 话术1：开场立人设</button>
-            <button onclick="switchScript(1)" id="sbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎤 话术2：Cloudflare 3分钟建站演示</button>
-            <button onclick="switchScript(2)" id="sbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎤 话术3：尾盘茶歇零压迫逼单</button>
-          </div>
-          <div id="scriptBox" class="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs sm:text-sm leading-relaxed"></div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">L1 核心现金流层 · 路南小市街区教室</span>
-          <h2 class="text-lg font-bold mt-1 mb-4">三大精品小班实战营课表总览</h2>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <button onclick="switchCourse(0)" id="cbtn-0" class="text-xs sm:text-sm px-4 py-2 rounded-xl font-bold transition subtab-active">班型A：职场提效班 (¥980)</button>
-            <button onclick="switchCourse(1)" id="cbtn-1" class="text-xs sm:text-sm px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">班型B：AIGC自媒体副业班 (¥1,480)</button>
-            <button onclick="switchCourse(2)" id="cbtn-2" class="text-xs sm:text-sm px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">★班型C：Vibe Coding创客班 (¥1,880)</button>
-          </div>
-          <div id="courseBox" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs"></div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-book-open-reader text-indigo-600 mr-2"></i>模块三：课研打磨与教具准备清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod3"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块四内容 ================= -->
-      <div id="tab-mod4" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">首月起号弹药库 · 6大必拍脚本</span>
-          <h2 class="text-lg font-bold mt-1 mb-4">小红书 / 抖音 / B站 首发爆款分镜脚本提词器</h2>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <button onclick="switchVideoScript(0)" id="vbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">📌 #01 置顶立人设：程序员+雅思老师</button>
-            <button onclick="switchVideoScript(1)" id="vbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🔥 #02 Vibe Coding：0元3分钟做抽签网</button>
-            <button onclick="switchVideoScript(2)" id="vbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💼 #03 体制内/白领：告别“一眼假”公文</button>
-            <button onclick="switchVideoScript(3)" id="vbtn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📸 #04 小红书探店图文：路北AI实验室</button>
-            <button onclick="switchVideoScript(4)" id="vbtn-4" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🤖 #05 副业/老板：3分钟克隆双语分身</button>
-            <button onclick="switchVideoScript(5)" id="vbtn-5" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💻 #06 硬件省钱：2块钱云算力跑AI绘画</button>
-          </div>
-          <div id="videoScriptBox" class="p-5 rounded-xl bg-slate-900 text-slate-100 text-xs sm:text-sm space-y-3 leading-relaxed"></div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-clapperboard text-rose-600 mr-2"></i>模块四：线上起号与首月内容执行清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod4"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块五内容 ================= -->
-      <div id="tab-mod5" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md">零雇员自动化基建 · 飞书多维表格</span>
-          <h2 class="text-lg font-bold mt-1 mb-4">1套飞书多维表格 = 全职教务 + 销售CRM + 作品墙 + 财务看板</h2>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表1：同城私域线索池</b><p class="text-slate-500 mt-1">记录渠道、画像、跟进状态，用看板视图拖拽跟单。</p></div>
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表2：排课与考勤表</b><p class="text-slate-500 mt-1">统筹路北/路南排期，开课前24小时自动发定位提醒。</p></div>
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表3：学员作品与口碑库</b><p class="text-slate-500 mt-1">汇总学员Cloudflare网址，在路北电视投屏做活体招牌。</p></div>
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80"><b>表4：收支与投流ROI表</b><p class="text-slate-500 mt-1">自动计算门票、学费、薯条投流与助教分润净利率。</p></div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-flag-checkered text-emerald-600 mr-2"></i>模块五：教务系统、助教孵化与B端准备清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod5"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块六：实战文书 + 营收模拟器 ================= -->
-      <div id="tab-mod6" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">实战运营文书库 · 即拿即用</span>
-              <h2 class="text-lg font-bold mt-1">私域诱饵、1v1陪跑协议与锁客话术中心</h2>
-            </div>
-            <button onclick="copyCurrentDoc()" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
-              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前文书
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchDoc(0)" id="dbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">🎁 文书1：加微自动发送《打工人AI外挂百宝箱》</button>
-            <button onclick="switchDoc(1)" id="dbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📄 文书2：《L2 1v1私人定制陪跑协议与MVP确认单》</button>
-            <button onclick="switchDoc(2)" id="dbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💬 文书3：私域加微5分钟锁客三步标准话术</button>
-          </div>
-          <textarea id="docTextarea" rows="8" readonly class="w-full p-4 rounded-xl bg-slate-900 text-slate-100 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
-          <div id="docCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 已成功复制到剪贴板！</div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h2 class="text-lg font-bold mb-1">交互式月度营收与助教分润模拟器</h2>
-          <p class="text-xs text-slate-400 mb-6">免房租双场地 + AI工具替代全职员工 + 零底薪兼职助教分润，构建高净利超级个体模型。</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="space-y-4 bg-slate-50 p-4 rounded-xl">
-              <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L0周末沙龙人数 (39.9元)</span><span id="val-l0" class="text-blue-600 font-bold">35 人</span></div>
-                <input type="range" id="slider-l0" min="0" max="120" value="35" oninput="calcRevenue()" class="w-full accent-blue-600">
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L1小班实战营招生 (均价1280元)</span><span id="val-l1" class="text-blue-600 font-bold">18 人</span></div>
-                <input type="range" id="slider-l1" min="0" max="60" value="18" oninput="calcRevenue()" class="w-full accent-blue-600">
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L2 1v1私教/轻咨询 (均价3500元)</span><span id="val-l2" class="text-blue-600 font-bold">3 单</span></div>
-                <input type="range" id="slider-l2" min="0" max="15" value="3" oninput="calcRevenue()" class="w-full accent-blue-600">
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-medium mb-1"><span>每月L3 B端企业内训/部署 (均价12000元)</span><span id="val-l3" class="text-blue-600 font-bold">1 单</span></div>
-                <input type="range" id="slider-l3" min="0" max="6" value="1" oninput="calcRevenue()" class="w-full accent-blue-600">
-              </div>
-            </div>
-            <div class="md:col-span-2 flex flex-col justify-between bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-6 rounded-2xl">
-              <div>
-                <span class="text-xs uppercase tracking-wider text-indigo-300">预估月度总营收 (Gross Revenue)</span>
-                <div id="totalRev" class="text-4xl font-extrabold text-amber-400 mt-2">¥ 46,937</div>
-                <div class="mt-3 inline-block bg-emerald-500/20 border border-emerald-400/30 px-4 py-2 rounded-xl">
-                  <span class="text-xs text-emerald-300">扣除¥3,500投流耗材及兼职助教课时费后净收益：</span>
-                  <span id="netProfit" class="text-xl font-bold text-emerald-400">¥ 41,637</span>
-                </div>
-              </div>
-              <div class="grid grid-cols-4 gap-2 pt-6 border-t border-white/10 text-xs">
-                <div><div class="text-slate-400">沙龙引流收入</div><div id="rev-l0" class="font-bold mt-0.5">¥1,397</div></div>
-                <div><div class="text-slate-400">L1小班课收入</div><div id="rev-l1" class="font-bold mt-0.5">¥23,040</div></div>
-                <div><div class="text-slate-400">1v1私教收入</div><div id="rev-l2" class="font-bold mt-0.5">¥10,500</div></div>
-                <div><div class="text-slate-400">B端企业服务</div><div id="rev-l3" class="font-bold mt-0.5">¥12,000</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ================= 模块七：课堂PPT蓝图与Prompt库 ================= -->
-      <div id="tab-mod7" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-md">课堂镇场之宝 · 工业级结构化模板</span>
-              <h2 class="text-lg font-bold mt-1">3大核心课程结构化 Prompt 母版 & 课前电脑预装清单</h2>
-            </div>
-            <button onclick="copyCurrentPrompt()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
-              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前模板
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchPrompt(0)" id="pbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">🏛️ 模板1：体制内/国企“反AI味”公文母版</button>
-            <button onclick="switchPrompt(1)" id="pbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📱 模板2：唐山同城爆款逆向仿写母版</button>
-            <button onclick="switchPrompt(2)" id="pbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💻 模板3：Vibe Coding单页应用生成母版</button>
-            <button onclick="switchPrompt(3)" id="pbtn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎒 模板4：学员课前BYOD电脑环境准备通知</button>
-          </div>
-          <textarea id="promptTextarea" rows="9" readonly class="w-full p-4 rounded-xl bg-slate-900 text-emerald-300 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
-          <div id="promptCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 模板已复制到剪贴板！</div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-600 mr-2"></i>模块七：课堂内功打磨与裂变准备清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod7"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块八：Vibe Coding 6讲教案与商业源码库 ================= -->
-      <div id="tab-mod8" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">随堂代码库 & 逼单防守话术</span>
-              <h2 class="text-lg font-bold mt-1">一键复制《Vibe Coding班》商业项目源码 / 沙龙吧台4大异议标准回答</h2>
-            </div>
-            <button onclick="copyCurrentCode()" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
-              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前内容
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchCode(0)" id="kbtn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">📦 源码#01：《唐山同城商业30秒智能报价器》</button>
-            <button onclick="switchCode(1)" id="kbtn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📦 源码#02：《打工人AI提效潜力1分钟诊断页》</button>
-            <button onclick="switchCode(2)" id="kbtn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🛡️ 话术：沙龙吧台 4 大常见异议防守标准答案</button>
-          </div>
-          <textarea id="codeTextarea" rows="9" readonly class="w-full p-4 rounded-xl bg-slate-900 text-amber-300 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
-          <div id="codeCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 已成功复制！</div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-laptop-code text-blue-600 mr-2"></i>模块八：Vibe Coding 旗舰课样板工程与接单准备清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod8"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块九：职场提效班 & AIGC副业班完整教案 ================= -->
-      <div id="tab-mod9" class="hidden space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-md">模块九随堂实操弹药库 · 上课直接发飞书群</span>
-              <h2 class="text-lg font-bold mt-1">Mermaid秒画架构图指令 / Excel清洗指令 / 即梦海报中文直出公式</h2>
-            </div>
-            <button onclick="copyCurrentDual()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
-              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前弹药
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchDual(0)" id="m9btn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">📊 弹药#01：文字秒转Mermaid流程图与甘特图指令</button>
-            <button onclick="switchDual(1)" id="m9btn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📈 弹药#02：Excel脏数据清洗与公式生成专家指令</button>
-            <button onclick="switchDual(2)" id="m9btn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎨 弹药#03：即梦AI小红书封面与商业摄影万能公式</button>
-            <button onclick="switchDual(3)" id="m9btn-3" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🎬 弹药#04：路南录课间1分钟数字人底板录制避坑口诀</button>
-          </div>
-          <textarea id="dualTextarea" rows="9" readonly class="w-full p-4 rounded-xl bg-slate-900 text-emerald-300 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
-          <div id="dualCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ 随堂弹药已复制！</div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-fire-flame-curved text-rose-600 mr-2"></i>模块九：职场班与AIGC班教具打磨执行清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod9"></div>
-        </div>
-      </div>
-
-      <!-- ================= 模块十：B端私享会、三大行业Coze蓝图与企业合同 ================= -->
-      <div id="tab-mod10" class="space-y-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-md">L3 高毛利交付引擎 · 1个下午配好1单 ¥6,800 - ¥29,800</span>
-              <h2 class="text-lg font-bold mt-1">唐山本地三大高付费行业 Coze 智能体 + 知识库交付蓝图</h2>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div class="p-4 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="font-bold text-amber-900 text-sm">🏪 蓝图1：同城实体店获客智能体</span>
-                <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-[10px]">¥6,800-12,800</span>
-              </div>
-              <p class="text-slate-600 leading-relaxed">
-                <b>适用：</b>路北爱琴海/万达餐饮、医美、房产、教培。<br>
-                <b>节点链路：</b>输入门店套餐 $\rightarrow$ 抓取同城热搜词 $\rightarrow$ 生成3条抖音团购方言口播稿 + 5条大众点评走心好评草稿 $\rightarrow$ 自动写入飞书日历并合成老板数字人视频。
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-200/80 space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="font-bold text-blue-900 text-sm">🚢 ★蓝图2：外贸制造多语种智能体</span>
-                <span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">¥15,000-29,800</span>
-              </div>
-              <p class="text-slate-600 leading-relaxed">
-                <b>适用：</b>唐山机电制造、钢铁配套、出口陶瓷厂。<br>
-                <b>节点链路：</b>发挥你<b>【雅思名师+程序员】</b>王牌优势！挂载《FOB报价表与产品手册RAG知识库（阈值0.75防胡编）》 $\rightarrow$ 识别海外询盘意图 $\rightarrow$ 自动生成地道欧美/俄语商务回复函与多语种视频。
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200/80 space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="font-bold text-emerald-900 text-sm">🏛️ 蓝图3：政企脱敏公文与制度管家</span>
-                <span class="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px]">¥5,000-8,000</span>
-              </div>
-              <p class="text-slate-600 leading-relaxed">
-                <b>适用：</b>本地银行、保险、国企工会、大中型民企HR。<br>
-                <b>节点链路：</b>部署腾讯IMA/飞书企业私有知识库 $\rightarrow$ 导入财务报销制度与往年优秀范文 $\rightarrow$ 3小时线下内训手把手教会全员10分钟出标准报告。
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <div>
-              <span class="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-md">B端签约弹药库 · 70%首付防拖欠设计</span>
-              <h2 class="text-lg font-bold mt-1">企业 AI 内训与部署服务合同 / 小老板私享会邀约话术 / 外贸智能体系统Prompt</h2>
-            </div>
-            <button onclick="copyCurrentB2B()" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-xl font-bold transition flex items-center">
-              <i class="fa-regular fa-copy mr-1.5"></i>一键复制当前文书
-            </button>
-          </div>
-
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="switchB2B(0)" id="b10btn-0" class="text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active">📜 文书1：《企业AI内训与智能体部署标准合同（70%首付版）》</button>
-            <button onclick="switchB2B(1)" id="b10btn-1" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🥂 文书2：《唐山小老板AI降本闭门私享会》1对1邀约话术</button>
-            <button onclick="switchB2B(2)" id="b10btn-2" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🌍 文书3：唐山外贸制造企业 Coze 多语种询盘智能体 System Prompt</button>
-          </div>
-
-          <textarea id="b2bTextarea" rows="10" readonly class="w-full p-4 rounded-xl bg-slate-900 text-amber-300 text-xs font-mono leading-relaxed focus:outline-none"></textarea>
-          <div id="b2bCopyToast" class="text-xs text-emerald-600 font-bold mt-2 hidden">✅ B端文书已成功复制！可直接打印签约或粘贴至 Coze 智能体后台。</div>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-          <h3 class="font-bold text-base mb-4 flex items-center"><i class="fa-solid fa-building-shield text-indigo-600 mr-2"></i>模块十：B端闭门私享会与企业级样板工程执行清单 (6项)</h3>
-          <div class="space-y-2.5 text-sm" id="checklistMod10"></div>
-        </div>
-      </div>
-
+    <!-- 右侧：单节课程深度讲义与课堂投屏工作台 -->
+    <main class="lg:col-span-9 space-y-6" id="lessonContentArea">
+      <!-- JS 动态渲染当前选中的课程完整内容 -->
     </main>
+
   </div>
+
+  <!-- 全局复制成功 Toast 提示 -->
+  <div id="globalToast" class="fixed bottom-6 right-6 z-50 hidden bg-emerald-600 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-2xl border border-emerald-400/40 flex items-center space-x-2 no-print">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="globalToastText">已成功复制到剪贴板！</span>
+  </div>
+
+  <!-- 引入增量课程数据包 -->
+  <script src="course_data.js"></script>
 
   <script>
-    const b2bLibrary = [
-`📄《糖玩 AI 实验室 · 企业 AI 内训与智能体部署服务协议（极简防坑版）》
-甲方（委托企业）：______________________
-乙方（服务提供方）：唐山市路北区/路南区________人工智能科技工作室（主理人：Key Leon）
+    let currentLessonId = null;
+    let currentLessonObj = null;
+    let currentFilteredList = [];
+    let isProjector = false;
+    let isStudentMode = false;
+    let toastTimer = null;
 
-一、 服务内容与明确交付边界（勾选适用项）
-1. 【企业实战内训】：乙方为甲方提供 ___ 场（每场 3 小时，参训人数不超过 20 人）的线下实战培训（地点：乙方路南小市街区教室 / 甲方会议室）。
-2. 【AI 工作流与知识库部署】：乙方为甲方配置并交付 ___ 个定制化 AI 智能体（Coze工作流）及 1 套企业专属 AI 知识库（基于甲方提供的现有 PDF/Excel 文档导入，总文档量不超过 100 份）。
-3. 【数字人分身克隆】：乙方为甲方指定出镜人员克隆 ___ 个高清数字人形象与专属音色，并完成 1 次现场操作培训。
-*(注：本协议为轻量化 AI 工作流配置与赋能培训服务，不包含传统定制软件源码开发及硬件采购，超出上述清单的新增需求需另行签署补充协议。)*
+    // 读取本地备课/授课完成状态
+    let taughtSet = new Set(JSON.parse(localStorage.getItem('tangplay_taught_lessons_v2') || '[]'));
 
-二、 费用总额与“零拖欠”付款节奏
-1. 本项目服务费总额为人民币 ¥__________元（含增值税电子普通发票）。
-2. 首付款（70%）：本协议签署当日，甲方向乙方支付 ¥________元，乙方收到首付款后正式启动备课与配置。
-3. 尾款（30%）：线下内训授课结束且约定数量的智能体现场演示运行通过【当日】，甲方向乙方结清尾款 ¥________元。
-
-三、 售后与保密承诺
-1. 交付验收后，乙方提供 30 天免费微信群操作答疑服务。
-2. 乙方对甲方提供的所有内部文档与报价数据严格保密，绝不向第三方泄露。
-
-甲方盖章/签字：____________   乙方盖章/签字：____________   签署日期：2026年__月__日`,
-
-`🥂【每月最后一个周五 · 《唐山主理人/小老板 AI 降本增效闭门私享会》定向邀约话术】
-“X总你好！我是Key老师🤝。之前咱们在工作室聊过你们店里/厂里想用AI省人工、拓客的事。
-这周五下午 14:30，我在【路北区糖玩1层实验室】专门组了一场小范围的《唐山老板 AI 降本增效闭门私享会》，全场只邀请 8 位咱们唐山本地的实体和外贸老板。
-这次我不讲普通员工的基础操作，专门用大屏给大家现场算账和演示两套我已经跑通的赚钱机器：
-1. 怎么用1套【同城团购Coze工作流 + 老板数字人】，帮一家10人小店每年省下 6-8 万的美工、文案和剪辑工资；
-2. 怎么用【企业产品参数知识库 + 雅思级多语种外贸智能体】，让普通业务员也能秒回海外客户询盘。
-门票99元（含精品手冲咖啡和1份《唐山企业AI部署诊断书》），目前还剩最后2个老板席位，周五下午你有空过来坐坐吗？”`,
-
-`# Role: 唐山外贸制造企业金牌多语种商务谈判专家 (Coze System Prompt)
-## Profile
-你是由前全职软件工程师兼前国际学校雅思名师 Key Leon 为【填写唐山某机电/陶瓷/钢铁外贸企业】量身定制的 AI 外贸业务总监。你精通欧美、中东、俄语区及东南亚国际贸易惯例（FOB Tianjin / CIF），英文表达地道专业，彻底摒弃生硬的中式英语（Chinglish）。
-
-## Knowledge Base Rules (知识库铁律 · 严防乱报价！)
-1. 当客户询问具体产品型号参数、MOQ（最小起订量）、交货期（Lead Time）或 FOB 价格时，**必须100%严格检索挂载的《企业产品手册与价格表知识库》**。
-2. 如果知识库中没有对应的型号或价格，请礼貌回复客户：“我们将为您核实最新的定制产线排期与精准FOB报价，并在2小时内由专属客户经理发送正式报价单（PI）”，**严禁凭空捏造任何参数与价格数字！**
-
-## Output Format
-每次生成外贸回复函或开发信时，请按以下三段式输出：
-1. **【地道外语正式回复函】**（可直接复制发送给海外客户，语气专业热情、段落清晰，结尾包含明确推进动作 Call-to-Action）。
-2. **【中文精准对照翻译】**（供工厂老板与国内跟单员快速审阅把关）。
-3. **【跟单策略建议】**（提醒业务员该客户最关心的核心痛点及下一步跟进钩子）。`
-    ];
-
-    const dualLibrary = [
-`# Role: 麦肯锡资深商业顾问与系统架构师
-## Task
-请将我下方提供的一段【零散业务流程/项目推进计划文字】，转化为 2 张可直接渲染的 Mermaid.js 专业图表代码：
-1. 图一（跨部门泳道流程图 flowchart TD）：按“不同角色/阶段”划分子图（subgraph），关键审批或风险节点用高亮颜色标出。
-2. 图二（项目推进甘特图 gantt）：包含明确的时间节点、关键里程碑（milestone）与先后依赖关系。`,
-`# Role: 资深数据分析师与 Excel / 飞书多维表格自动化专家
-请帮我将格式混乱的业务表格清洗为标准结构化表格，或直接写出在 Excel / WPS 中拆分姓名手机号、统一日期、去除单位文字并求和的【精确函数公式】。`,
-`🎨【公式一：小红书同城探店/副业高点击率封面（支持即梦AI直接生成中文大字）】
-一张极具高级感的小红书竖版封面海报（比例3:4）。画面主体是【唐山一家温暖极客风的AI创客咖啡沙龙，木质长桌上放着打开代码的MacBook笔记本和一杯拉花拿铁】，画面上方居中排版醒目的粗体现代中文字体写着：“【唐山周末新去处】”，下方配有副标题标签：“【2小时学会AI编程】”，8k超高清细节。`,
-`🎬【路南VIP录课间 · 1分钟数字人底板录制满分避坑口诀】
-1. 眼神锁死手机摄像头，全程微笑；2. 手势控制在胸前黄金三角区，不挡脸部；3. 每读完两句话嘴巴自然闭合停顿 1 秒钟，消除数字人张嘴假人感！`
-    ];
-
-    const codeLibrary = [
-`<!-- 随堂商业源码 #01：唐山同城商业服务30秒智能报价器 (quote.html) -->
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>30秒定制服务智能算价器</title><script src="https://cdn.tailwindcss.com"><\/script></head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 flex items-center justify-center">
-  <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
-    <h1 class="text-xl font-extrabold text-white">🧮 30秒定制服务智能算价器</h1>
-    <div class="space-y-2 text-xs" id="opts">
-      <label class="flex justify-between p-3 rounded-xl bg-slate-800 cursor-pointer"><input type="checkbox" value="1280" checked onchange="calc()"> <span>1. 老板24h数字人分身克隆</span><b class="text-amber-400">¥1,280</b></label>
-      <label class="flex justify-between p-3 rounded-xl bg-slate-800 cursor-pointer"><input type="checkbox" value="1980" onchange="calc()"> <span>2. Coze同城爆款文案工作流</span><b class="text-amber-400">¥1,980</b></label>
-      <label class="flex justify-between p-3 rounded-xl bg-slate-800 cursor-pointer"><input type="checkbox" value="2980" onchange="calc()"> <span>3. 企业专属AI知识库部署</span><b class="text-amber-400">¥2,980</b></label>
-    </div>
-    <div class="p-4 rounded-2xl bg-indigo-950 flex justify-between items-center">
-      <div><div class="text-[11px] text-indigo-300">预估总投入</div><div id="tot" class="text-2xl font-black text-amber-400">¥ 1,280</div></div>
-      <button onclick="alert('配置单已生成，请截图联系Key老师！')" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">锁定方案</button>
-    </div>
-  </div>
-  <script>function calc(){const cs=document.querySelectorAll('#opts input:checked');let s=0;cs.forEach(c=>s+=parseInt(c.value));if(cs.length>=2)s=Math.round(s*0.9);document.getElementById('tot').innerText='¥ '+s.toLocaleString();}<\/script>
-</body></html>`,
-`<!-- 随堂商业源码 #02：打工人AI提效潜力1分钟自测诊断页 (test.html) -->
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>测测AI每周能帮你早下班几小时？</title><script src="https://cdn.tailwindcss.com"><\/script></head>
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
-  <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
-    <h1 class="text-lg font-extrabold">🤖 测测 AI 每周能帮你省下几小时？</h1>
-    <div class="space-y-3 text-xs">
-      <div><label class="block mb-1">1. 每周写材料/做PPT/核对表格耗时？</label><select id="q1" class="w-full p-2.5 rounded-xl bg-slate-900"><option value="3">不到3小时</option><option value="8" selected>4-10小时</option><option value="15">10小时以上</option></select></div>
-      <div><label class="block mb-1">2. 最想用AI突破的副业或技能方向？</label><select id="q2" class="w-full p-2.5 rounded-xl bg-slate-900"><option value="2">只想准点下班</option><option value="6" selected>做同城自媒体数字人</option><option value="10">零代码搓网站/小程序变现</option></select></div>
-      <button onclick="diag()" class="w-full py-3 rounded-xl bg-emerald-600 font-bold">立即生成我的AI诊断报告</button>
-    </div>
-    <div id="res" class="hidden p-4 rounded-xl bg-slate-900 text-xs space-y-1"><div id="rt" class="text-emerald-400 font-bold"></div><div class="text-amber-300 pt-1">👉 本周六下午14:30来【路北糖玩1层】喝杯咖啡，Key老师现场帮你把外挂装进电脑！</div></div>
-  </div>
-  <script>function diag(){const h=parseInt(document.getElementById('q1').value)+parseInt(document.getElementById('q2').value);document.getElementById('rt').innerText='🎉 诊断结论：配置AI工作流后，你每周可释放约 '+h+' 小时！';document.getElementById('res').classList.remove('hidden');}<\/script>
-</body></html>`,
-`🛡️【路北沙龙吧台 & 微信私聊 · 4大常见异议标准防守话术】
-1. 零基础能学会吗？ -> 全程中文聊天写代码，8人小班手把手排障。
-2. B站有免费教程？ -> 95%的人死在第一步环境报错没人问，小班课省下半年瞎折腾。
-3. 旧轻薄本跑得动吗？ -> 100%调用云端大模型与2元/小时云算力。
-4. 再考虑一下？ -> 祭出【首节正课2小时听完不满意当场100%无理由全退】铁律！`
-    ];
-
-    const promptsLibrary = [
-`# Role: 资深政企文字综合专家与业务幕僚
-严禁出现：“总而言之”、“综上所述”、“赋能”、“抓手”、“闭环”。每段不超过4句话，小标题采用“四字动宾结构 + 破折号具体说明”。`,
-`# Role: 唐山本地生活与同城高转化自媒体操盘手
-拆解对标爆款文案钩子，结合唐山本地业务，1:1重写3条不同切入角的同城脚本。`,
-`# Role: 硅谷全栈独立开发者与UI交互设计师
-编写单文件完整可运行的 HTML5 应用（Single-File HTML），使用 Tailwind CSS CDN，内联所有 JS 逻辑并支持 localStorage 本地存储。`,
-`💻《糖玩 AI 实验室 · 课前笔记本电脑 5 分钟准备清单》
-携带笔记本及充电器、安装 Chrome/Edge、预装飞书 PC 端、开课前30分钟提供免费1v1环境义诊。`
-    ];
-
-    const docsLibrary = [
-`🎁《2026唐山打工人AI提效与零代码外挂百宝箱》（Key老师精选版）
-1. 公文去AI味主力：Claude 3.7 / DeepSeek R1
-2. 秒做汇报PPT与架构图：Kimi PPT助手 + Napkin AI / Mermaid.live
-3. 零代码开发与智能体：Cursor + Coze扣子 + GitHub & Cloudflare Pages
-4. 视觉与24小时数字人：即梦AI + 闪剪/HeyGen + RunningHub云算力`,
-`📄《糖玩 AI 实验室 · 1v1 私人定制陪跑服务确认单》
-包含：单一 MVP 交付目标锁定条款 + 教练带教模式说明 + 首节诊断课不满意扣除¥399后全退保障。`,
-`💬【微信私域加好友 5 分钟锁客三步话术】
-第1步：发《AI外挂百宝箱》问需求 -> 第2步：邀约周六下午路北糖玩1层39.9元沙龙（送现磨咖啡） -> 第3步：扫码锁座拉入快闪群。`
-    ];
-
-    const scriptsData = [
-      `“大家下午好，欢迎来到糖玩 AI 实验室！我以前干过两份看似八竿子打不着的全职工作——全职软件工程师，和国际学校雅思英语老师。我把路北和路南两处场地拿出来，就是要用国际学校名师的拆解功力，把硅谷最硬核的 AI 编程和提效工具，翻译成咱们唐山上班族一听就懂、当场能在电脑上跑通的实用技能！”`,
-      `“现在大家盯紧大屏幕：我用大白话让 AI 写一个《唐山打工人周末吃啥抽签器》，粘贴进 GitHub + Cloudflare Pages，倒数 10 秒……网站已经自动发布上线了！所有人掏出手机扫码摇签！”`,
-      `“今天凡是在沙龙现场报名 L1 小班实战营的朋友：第一，门票全额抵扣再立减 200 元；第二，送价值 399 元课前 1v1 电脑环境配置；第三，第一节正课听完如果不满意，当场无理由 100% 全额退费！”`
-    ];
-
-    const coursesData = [
-      [
-        { t: '第 1 讲：结构化提示词与“反AI味”公文写作', d: '训练模仿你个人文风的专属笔杆子智能体，10分钟搞定国企材料、周报、立项书与会议纪要。' },
-        { t: '第 2 讲：高颜值汇报 PPT 与架构图秒级生成', d: '用 Claude/Kimi + Gamma 及 Mermaid 代码流，从一份 Word 直接生成逻辑严密的可编辑 PPT。' },
-        { t: '第 3 讲：Excel 复杂数据清洗与自动化报表', d: '告别死记硬背复杂公式，用自然语言完成多表核对、异常财务数据排查与可视化图表生成。' },
-        { t: '第 4 讲：打造个人/部门专属 AI 知识库 (RAG)', d: '将规章制度、标书模板喂给 IMA/飞书知识库/NotebookLM，实现零幻觉精准问答。' }
-      ],
-      [
-        { t: '第 1 讲：赛道定位与爆款内容逆向拆解工程', d: '用 AI 批量拆解对标爆款结构，建立唐山同城/垂直赛道选题库，1小时产出30条高转化脚本。' },
-        { t: '第 2 讲：AI 商业视觉与高点击率首图制作', d: '掌握即梦与 Midjourney 人物一致性控制、商品换背景与小红书吸睛封面排版。' },
-        { t: '第 3 讲：AI 动态视频生成与运镜控制', d: '结合即梦视频、可灵与海螺 AI，制作电影感空镜、产品展示动画与故事短片。' },
-        { t: '第 4 讲：克隆你的 24 小时数字人分身与声音', d: '1分钟视频克隆高清数字人，搭建“每天15分钟审核、全年日更”的自动化短视频流水线。' },
-        { t: '第 5 讲：同城聚光/DOU+投流与私域变现闭环', d: '手把手配置低成本同城投流参数、团购挂载与微信私域高转化承接SOP。' }
-      ],
-      [
-        { t: '第 1 讲：程序员思维破冰与 Cursor 极速上手', d: '零英文代码基础，学会像产品经理一样写 PRD 提示词，1小时跑通第一个交互式网页应用。' },
-        { t: '第 2 讲 ★核心：GitHub + Cloudflare 零成本部署', d: '亲手打通硅谷顶级免费基建，实现“改一行字、10秒全球同步上线”，并绑定个人专属域名。' },
-        { t: '第 3 讲：唐山本地商业小工具开发实战', d: '开发可直接发微信群的“行业自动报价计算器”或“客户痛点测评引流页”，自带本地存储。' },
-        { t: '第 4 讲：Coze (扣子) 工作流与智能体编排', d: '打通插件与 API，搭建“自动抓热点 -> 自动写稿配图 -> 自动存入飞书”的数字员工。' },
-        { t: '第 5 讲：飞书多维表格 / Supabase 轻量数据库', d: '解决静态网页无法收单的痛点，零服务器成本打造带后台统计的客户预约登记系统。' },
-        { t: '第 6 讲：Demo Day 作品路演与闲鱼/小红书接单指南', d: '全班作品汇总至工作室作品墙，传授如何承接 500-3,000 元的轻量工具代开发订单。' }
-      ]
-    ];
-
-    const videoScriptsData = [
-      `<div class="text-amber-400 font-bold">【脚本 #01 · 全网置顶立人设】《前程序员+前雅思老师，在唐山开了家AI实验室？》（真人实景 · 55秒）</div><div>路北糖玩1层实景拍摄，突出“软件工程兜底技术 + 国际学校名师拆解人话”双基因反差。</div>`,
-      `<div class="text-amber-400 font-bold">【脚本 #02 · Vibe Coding炫技】《0元服务器！3分钟用大白话做个唐山周末抽签网站》（数字人+录屏 · 45秒）</div><div>展示中文提示词生成代码 + GitHub & Cloudflare 10秒上线全过程。</div>`,
-      `<div class="text-amber-400 font-bold">【脚本 #03 · 同城白领痛点】《唐山文字岗自救：别再用AI写“一眼假”的公文了！》（数字人+分屏 · 40秒）</div><div>演示单位范文喂入知识库 + 四维去AI味Prompt + Mermaid秒转PPT。</div>`,
-      `<div class="text-amber-400 font-bold">【脚本 #04 · 小红书同城爆款图文】《在唐山路北发现一家神仙AI实验室！周末充电新去处💻》</div><div>6张高颜值实拍组图，主攻 #唐山同城 #唐山周末去哪儿 搜索流量。</div>`,
-      `<div class="text-amber-400 font-bold">【脚本 #05 · 副业与商家引流】《镜头恐惧症？前雅思老师教你3分钟克隆中英双语数字人》</div><div>真人真声无缝切换伦敦腔英语与地道唐山话数字人分身。</div>`,
-      `<div class="text-amber-400 font-bold">【脚本 #06 · 极客省钱干货】《学AI绘画和视频必须买1万块的电脑？前程序员教你2块钱搞定》</div><div>演示旧电脑升级SSD + 2元/小时 RunningHub 云端算力方案。</div>`
-    ];
-
-    const defaultChecklistMod1 = [
-      { id: 'm1_c1', text: '【品牌决策】敲定最终工作室品牌名与Slogan', done: true },
-      { id: 'm1_c2', text: '【场地确认】实地测量路北“糖玩”1层沙龙区与路南“小市街区”教室尺寸', done: false },
-      { id: 'm1_c3', text: '【合规办照】在“河北政务服务网”提交个体工商户注册（含技术服务与业务培训）', done: false },
-      { id: 'm1_c4', text: '【收款开通】办理支持信用卡与花呗分期的个体户聚合收款码', done: false },
-      { id: 'm1_c5', text: '【私域基建】配置主理人专用微信号（头像、朋友圈背景墙、标签库）', done: false },
-      { id: 'm1_c6', text: '【新媒体占坑】注册小红书、抖音、B站账号，统一“前程序员+前雅思名师”简介', done: false }
-    ];
-
-    const defaultChecklistMod2 = [
-      { id: 'm2_c1', text: '【旧机复活】购买3块512G SSD固态硬盘+3根内存条，完成3台低配台式机升级与系统重装', done: false },
-      { id: 'm2_c2', text: '【软件预装】在4台电脑上统一装好 Chrome、Cursor、飞书、剪映及云算力平台书签', done: false },
-      { id: 'm2_c3', text: '【路北软装】完成糖玩1层折叠长桌椅摆放、桌面魔方插座布线与亚克力发光Logo上墙', done: false },
-      { id: 'm2_c4', text: '【路南改造】完成小市街区主教室100寸投影/白板安装，并布置好1v1私教兼录课小房间', done: false },
-      { id: 'm2_c5', text: '【摄制联调】测试无线领夹麦收音效果与录课间补光灯机位，试拍1分钟口播样片', done: false },
-      { id: 'm2_c6', text: '【工具开通】完成 Claude/ChatGPT、Cursor Pro、即梦/Midjourney 及数字人平台账号订阅', done: false }
-    ];
-
-    const defaultChecklistMod3 = [
-      { id: 'm3_c1', text: '【云端看板】跑通 GitHub + Cloudflare Pages 自动部署流水线（已完成！）', done: true },
-      { id: 'm3_c2', text: '【沙龙教具】将《唐山周末吃啥抽签器 (lucky.html)》部署上线并生成二维码', done: false },
-      { id: 'm3_c3', text: '【沙龙课件】完成 L0《2小时周末AI创客沙龙》15页演示 PPT 与随堂赠品工具包整理', done: false },
-      { id: 'm3_c4', text: '【样片录制】用数字人平台克隆一段自己用英语+唐山话讲段子的演示视频，放入沙龙PPT', done: false },
-      { id: 'm3_c5', text: '【首开班型】在 L1 三大班型中选定第1期首发班型，排定路南教室周末上课日历', done: false },
-      { id: 'm3_c6', text: '【协议打印】在模块六复制《1v1私人陪跑协议确认单》并打印10份备用于路北吧台', done: false }
-    ];
-
-    const defaultChecklistMod4 = [
-      { id: 'm4_c1', text: '【账号装修】按模块四模板完成小红书、抖音、B站的昵称、头像、背景图与黄金简介配置', done: false },
-      { id: 'm4_c2', text: '【分身克隆】在路南录课间录制3段1分钟高清底板视频，完成个人数字人分身与双语声音克隆', done: false },
-      { id: 'm4_c3', text: '【置顶实拍】真人实景拍摄并剪辑发布《脚本#01：前程序员+前雅思老师》与《脚本#02：3分钟建站》', done: false },
-      { id: 'm4_c4', text: '【探店图文】拍摄路北糖玩1层沙龙环境6张实拍图，发布首篇小红书同城探店图文笔记', done: false },
-      { id: 'm4_c5', text: '【私域诱饵】在模块六复制《打工人AI外挂百宝箱》全文，设为微信加好友自动欢迎语', done: false },
-      { id: 'm4_c6', text: '【同城首投】挑选赞藏最高的首发笔记，使用75元小红书薯条定向唐山22-42岁人群测试私信成本', done: false }
-    ];
-
-    const defaultChecklistMod5 = [
-      { id: 'm5_c1', text: '【飞书建表】按模块五架构搭建《飞书多维表格4表联动系统》（线索池/排课表/作品墙/收支表）', done: false },
-      { id: 'm5_c2', text: '【扫码表单】生成“周末沙龙报名与课前问卷”飞书收集表二维码，打印立牌放在路北吧台', done: false },
-      { id: 'm5_c3', text: '【作品展墙】创建工作室线上《唐山学员AI创客作品墙》页面，预填入3个你自己的示范项目', done: false },
-      { id: 'm5_c4', text: '【助教物色】在首期L1实战营学员中物色1-2名动手快、表达好的种子学员，邀请担任随堂助教', done: false },
-      { id: 'm5_c5', text: '【权限隔离】将核心课件迁入飞书知识库并开启“禁止下载/导出副本”权限，保障核心知识产权', done: false },
-      { id: 'm5_c6', text: '【B端手册】制作1份《唐山企业AI降本增效赋能方案（同城获客/外贸知识库/公文内训）》PDF画册', done: false }
-    ];
-
-    const defaultChecklistMod7 = [
-      { id: 'm7_c1', text: '【PPT生成】按模块七15页蓝图，使用 Gamma/Kimi 生成首场沙龙PPT并嵌入抽签器二维码', done: false },
-      { id: 'm7_c2', text: '【Prompt建库】将模块七的3大工业级结构化Prompt模板存入飞书知识库，供课堂一键发给学员', done: false },
-      { id: 'm7_c3', text: '【课前通知】将《BYOD课前笔记本电脑5分钟准备清单》配置进飞书排课表的24小时自动提醒中', done: false },
-      { id: 'm7_c4', text: '【晒单诱饵】整理好《50个拿来即用的Coze工作流与提示词包》，作为沙龙第85分钟晒朋友圈奖品', done: false },
-      { id: 'm7_c5', text: '【裂变海报】用即梦AI制作一张“老学员推荐朋友报小班课立返¥150现金红包”的社群专属海报', done: false },
-      { id: 'm7_c6', text: '【全真彩排】在路北糖玩1层大电视上完整计时串讲一遍120分钟沙龙流程，确保卡点丝滑', done: false }
-    ];
-
-    const defaultChecklistMod8 = [
-      { id: 'm8_c1', text: '【教具上线1】在 GitHub 新建 quote.html，将模块八《30秒智能报价器》部署上线作为第3讲样板', done: false },
-      { id: 'm8_c2', text: '【教具上线2】在 GitHub 新建 test.html，将模块八《1分钟AI效率诊断页》部署上线作为引流入口', done: false },
-      { id: 'm8_c3', text: '【Coze样板】在自己扣子账号提前搭好1条“同城爆款自动改写写进飞书”工作流，供第4讲拆解演示', done: false },
-      { id: 'm8_c4', text: '【证书设计】用 Canva/即梦 设计一张极客风《糖玩AI实验室·全栈创客结业证书》模板', done: false },
-      { id: 'm8_c5', text: '【话术演练】熟读模块八“吧台4大常见异议防守话术”，把首节课不满意全退做成吧台桌牌', done: false },
-      { id: 'm8_c6', text: '【接单渠道】在闲鱼与小红书发布1条“唐山本地/远程轻量AI网页与智能体定制陪跑”商品链接测需求', done: false }
-    ];
-
-    const defaultChecklistMod9 = [
-      { id: 'm9_c1', text: '【脱敏练习表】准备3张包含常见格式错误的Excel脱敏练习表（考勤/对账/销售），存入职场班第3讲文件夹', done: false },
-      { id: 'm9_c2', text: '【知识库样板】在腾讯IMA或NotebookLM中导入1份唐山本地行业政策/业务手册PDF，做好第4讲演示样板', done: false },
-      { id: 'm9_c3', text: '【视觉案例集】用模块九【即梦AI公式】生成4组“唐山美食/实体店海报前后对比图”，放入AIGC班第2讲课件', done: false },
-      { id: 'm9_c4', text: '【录课间贴纸】将《1分钟数字人底板录制避坑口诀》打印张贴在路南VIP录课间三脚架正上方', done: false },
-      { id: 'm9_c5', text: '【讲师手册】将模块七、八、九整理为《糖玩AI实验室·认证兼职讲师标准化授课SOP》飞书文档', done: false },
-      { id: 'm9_c6', text: '【排课定档】在飞书日历正式排定首月周末路北L0沙龙与路南L1三大班型的开课时间表', done: false }
-    ];
-
-    const defaultChecklistMod10 = [
-      { id: 'm10_c1', text: '【外贸样板】在Coze搭建1个《唐山机电/陶瓷外贸多语种询盘与报价智能体》Demo，备用于老板私享会演示', done: false },
-      { id: 'm10_c2', text: '【实体店样板】在Coze搭建1个《唐山同城餐饮/美业抖音团购脚本+大众点评种草生成流》Demo', done: false },
-      { id: 'm10_c3', text: '【合同印制】复制模块十《企业AI内训与智能体部署标准合同（70%首付版）》打印5份备用于路南VIP室', done: false },
-      { id: 'm10_c4', text: '【开票准备】在电子税务局开通个体工商户“技术咨询服务/信息技术服务”数电发票开票权限', done: false },
-      { id: 'm10_c5', text: '【种子邀约】从前3期C端沙龙与小班课学员中筛选出5-8位小老板/高管，发送首场周五闭门私享会邀请', done: false },
-      { id: 'm10_c6', text: '【首单闭环】完成首场路北B端私享会路演，成功签约并交付第1单唐山本地企业内训或工作流部署！', done: false }
-    ];
-
-    const defaultProcurement = [
-      { id: 'p1', cat: '场地软装', name: '定制亚克力霓虹发光字 + 文化墙标语贴 (2套)', price: 700, checked: true },
-      { id: 'p2', cat: '场地软装', name: '路北沙龙区：折叠培训长条桌(5张) + 工学折叠椅(16把)', price: 2200, checked: true },
-      { id: 'p3', cat: '场地软装', name: '路南教室：移动磁性玻璃白板 + 6幅AI艺术装裱画框', price: 750, checked: true },
-      { id: 'p4', cat: '场地软装', name: '门型展架(4个) + 3米线USB立式魔方插座(8个)', price: 550, checked: true },
-      { id: 'p5', cat: '场地软装', name: '胶囊咖啡机 + 500个定制Logo贴纸茶歇纸杯', price: 400, checked: true },
-      { id: 'p6', cat: '硬件升级', name: '路南主教室：高流明投影仪 + 100寸抗光支架幕布', price: 2400, checked: true },
-      { id: 'p7', cat: '硬件升级', name: '无线一拖二降噪领夹麦克风 (DJI Mic Mini / 猛玛)', price: 850, checked: true },
-      { id: 'p8', cat: '硬件升级', name: '录课间常亮LED补光灯 + 柔光箱 + 落地三脚架', price: 650, checked: true },
-      { id: 'p9', cat: '硬件升级', name: '3台旧电脑升级包 (3块512G SSD + 3根DDR4内存条)', price: 1050, checked: true },
-      { id: 'p10', cat: '硬件升级', name: '双场地千兆Mesh路由器 + HDMI无线投屏器', price: 550, checked: true },
-      { id: 'p11', cat: 'AI与算力', name: '大模型与AI编程主力订阅 (Claude/GPT + Cursor Pro 首季)', price: 1800, checked: true },
-      { id: 'p12', cat: 'AI与算力', name: '视觉与数字人工具订阅 (即梦/MJ + 闪剪/HeyGen数字人)', price: 2400, checked: true },
-      { id: 'p13', cat: 'AI与算力', name: 'RunningHub / AutoDL 课堂教学云端算力池预充值', price: 600, checked: true },
-      { id: 'p14', cat: '冷启动投流', name: '小红书聚光/薯条 + 抖音同城DOU+ 首期测试金', price: 3000, checked: true }
-    ];
-
-    let saved = JSON.parse(localStorage.getItem('ts_ai_studio_v10')) || JSON.parse(localStorage.getItem('ts_ai_studio_v9')) || JSON.parse(localStorage.getItem('ts_ai_studio_v8')) || JSON.parse(localStorage.getItem('ts_ai_studio_v3')) || {};
-    let state = {
-      selectedBrandIndex: saved.selectedBrandIndex ?? 0,
-      brandName: saved.brandName || '糖玩 AI 实验室 (TangPlay AI Lab)',
-      checklistMod1: saved.checklistMod1 || defaultChecklistMod1,
-      checklistMod2: saved.checklistMod2 || defaultChecklistMod2,
-      checklistMod3: saved.checklistMod3 || defaultChecklistMod3,
-      checklistMod4: saved.checklistMod4 || defaultChecklistMod4,
-      checklistMod5: saved.checklistMod5 || defaultChecklistMod5,
-      checklistMod7: saved.checklistMod7 || defaultChecklistMod7,
-      checklistMod8: saved.checklistMod8 || defaultChecklistMod8,
-      checklistMod9: saved.checklistMod9 || defaultChecklistMod9,
-      checklistMod10: saved.checklistMod10 || defaultChecklistMod10,
-      procurement: saved.procurement || defaultProcurement
-    };
-
-    function saveState() {
-      localStorage.setItem('ts_ai_studio_v10', JSON.stringify(state));
-      renderUI();
+    function saveTaughtState() {
+      localStorage.setItem('tangplay_taught_lessons_v2', JSON.stringify(Array.from(taughtSet)));
     }
 
-    function selectBrand(name, idx) {
-      state.selectedBrandIndex = idx;
-      state.brandName = name;
-      saveState();
+    // HTML 实体安全转义：彻底防止 Prompt 里的 <script> / <meta> 标签被浏览器吞噬或触发 XSS
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    function toggleCheck(listName, id) {
-      const item = state[listName].find(i => i.id === id);
-      if (item) item.done = !item.done;
-      saveState();
+    function showToast(message) {
+      const toast = document.getElementById('globalToast');
+      document.getElementById('globalToastText').innerText = message;
+      toast.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('hidden'), 2000);
     }
 
-    function toggleProcure(id) {
-      const item = state.procurement.find(i => i.id === id);
-      if (item) item.checked = !item.checked;
-      saveState();
-    }
-
-    function switchB2B(idx) {
-      for (let i = 0; i < 3; i++) {
-        const btn = document.getElementById('b10btn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      document.getElementById('b2bTextarea').value = b2bLibrary[idx];
-      document.getElementById('b2bCopyToast').classList.add('hidden');
-    }
-
-    function copyCurrentB2B() {
-      const el = document.getElementById('b2bTextarea');
-      el.select();
-      navigator.clipboard.writeText(el.value);
-      document.getElementById('b2bCopyToast').classList.remove('hidden');
-    }
-
-    function switchDual(idx) {
-      for (let i = 0; i < 4; i++) {
-        const btn = document.getElementById('m9btn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      document.getElementById('dualTextarea').value = dualLibrary[idx];
-      document.getElementById('dualCopyToast').classList.add('hidden');
-    }
-
-    function copyCurrentDual() {
-      const el = document.getElementById('dualTextarea');
-      el.select();
-      navigator.clipboard.writeText(el.value);
-      document.getElementById('dualCopyToast').classList.remove('hidden');
-    }
-
-    function switchCode(idx) {
-      for (let i = 0; i < 3; i++) {
-        const btn = document.getElementById('kbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      document.getElementById('codeTextarea').value = codeLibrary[idx];
-      document.getElementById('codeCopyToast').classList.add('hidden');
-    }
-
-    function copyCurrentCode() {
-      const el = document.getElementById('codeTextarea');
-      el.select();
-      navigator.clipboard.writeText(el.value);
-      document.getElementById('codeCopyToast').classList.remove('hidden');
-    }
-
-    function switchPrompt(idx) {
-      for (let i = 0; i < 4; i++) {
-        const btn = document.getElementById('pbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      document.getElementById('promptTextarea').value = promptsLibrary[idx];
-      document.getElementById('promptCopyToast').classList.add('hidden');
-    }
-
-    function copyCurrentPrompt() {
-      const el = document.getElementById('promptTextarea');
-      el.select();
-      navigator.clipboard.writeText(el.value);
-      document.getElementById('promptCopyToast').classList.remove('hidden');
-    }
-
-    function switchDoc(idx) {
-      for (let i = 0; i < 3; i++) {
-        const btn = document.getElementById('dbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      document.getElementById('docTextarea').value = docsLibrary[idx];
-      document.getElementById('docCopyToast').classList.add('hidden');
-    }
-
-    function copyCurrentDoc() {
-      const el = document.getElementById('docTextarea');
-      el.select();
-      navigator.clipboard.writeText(el.value);
-      document.getElementById('docCopyToast').classList.remove('hidden');
-    }
-
-    function switchScript(idx) {
-      for (let i = 0; i < 3; i++) {
-        const btn = document.getElementById('sbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      const box = document.getElementById('scriptBox');
-      if (box) box.innerText = scriptsData[idx];
-    }
-
-    function switchCourse(idx) {
-      for (let i = 0; i < 3; i++) {
-        const btn = document.getElementById('cbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs sm:text-sm px-4 py-2 rounded-xl font-bold transition subtab-active'
-          : 'text-xs sm:text-sm px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      const box = document.getElementById('courseBox');
-      if (!box) return;
-      box.innerHTML = '';
-      coursesData[idx].forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'p-3.5 rounded-xl bg-slate-50 border border-slate-200/80';
-        div.innerHTML = `<div class="font-bold text-slate-900">${c.t}</div><div class="text-slate-500 mt-1 leading-relaxed">${c.d}</div>`;
-        box.appendChild(div);
-      });
-    }
-
-    function switchVideoScript(idx) {
-      for (let i = 0; i < 6; i++) {
-        const btn = document.getElementById('vbtn-' + i);
-        if (btn) btn.className = i === idx
-          ? 'text-xs px-3 py-1.5 rounded-lg font-medium transition subtab-active'
-          : 'text-xs px-3 py-1.5 rounded-lg font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
-      }
-      const box = document.getElementById('videoScriptBox');
-      if (box) box.innerHTML = videoScriptsData[idx];
-    }
-
-    function renderChecklist(containerId, listName) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      container.innerHTML = '';
-      state[listName].forEach(item => {
-        const div = document.createElement('div');
-        div.onclick = () => toggleCheck(listName, item.id);
-        div.className = `flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition ${item.done ? 'bg-emerald-50/50 border-emerald-200 text-slate-400 line-through' : 'bg-white border-slate-200 hover:border-blue-300 text-slate-700'}`;
-        div.innerHTML = `
-          <input type="checkbox" ${item.done ? 'checked' : ''} class="w-4 h-4 accent-emerald-600 rounded pointer-events-none">
-          <span class="flex-1 text-xs sm:text-sm font-medium">${item.text}</span>
-          <span class="text-xs px-2 py-0.5 rounded shrink-0 ${item.done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">${item.done ? '已完成' : '待办'}</span>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function renderUI() {
-      document.getElementById('headerBrandName').innerText = state.brandName;
-
-      for (let i = 0; i < 4; i++) {
-        const el = document.getElementById('brand-' + i);
-        if (el) {
-          el.className = i === state.selectedBrandIndex
-            ? 'cursor-pointer p-4 rounded-xl border-2 border-blue-600 bg-blue-50/40 transition'
-            : 'cursor-pointer p-4 rounded-xl border-2 border-slate-200 hover:border-blue-300 transition';
+    // 兼容 HTTPS 与本地 file:// 双击预览的安全复制函数
+    function copyToClipboard(text, btnId, successMsg) {
+      const finish = () => {
+        showToast(successMsg || '已复制到剪贴板，可直接粘贴发飞书群！');
+        if (btnId) {
+          const btn = document.getElementById(btnId);
+          if (btn) {
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i>已复制';
+            setTimeout(() => { btn.innerHTML = old; }, 1600);
+          }
         }
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+      } else {
+        fallbackCopy(text, finish);
       }
-
-      renderChecklist('checklistMod1', 'checklistMod1');
-      renderChecklist('checklistMod2', 'checklistMod2');
-      renderChecklist('checklistMod3', 'checklistMod3');
-      renderChecklist('checklistMod4', 'checklistMod4');
-      renderChecklist('checklistMod5', 'checklistMod5');
-      renderChecklist('checklistMod7', 'checklistMod7');
-      renderChecklist('checklistMod8', 'checklistMod8');
-      renderChecklist('checklistMod9', 'checklistMod9');
-      renderChecklist('checklistMod10', 'checklistMod10');
-
-      const pContainer = document.getElementById('procurementContainer');
-      if (pContainer) {
-        pContainer.innerHTML = '';
-        let totalCost = 0;
-        state.procurement.forEach(item => {
-          if (item.checked) totalCost += item.price;
-          const div = document.createElement('div');
-          div.onclick = () => toggleProcure(item.id);
-          div.className = `flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${item.checked ? 'bg-blue-50/30 border-blue-200 text-slate-800' : 'bg-slate-50 border-slate-200 text-slate-400 opacity-60'}`;
-          div.innerHTML = `
-            <div class="flex items-center space-x-2.5 pr-2">
-              <input type="checkbox" ${item.checked ? 'checked' : ''} class="w-4 h-4 accent-blue-600 rounded pointer-events-none">
-              <div>
-                <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 mr-1">${item.cat}</span>
-                <span class="text-xs font-medium">${item.name}</span>
-              </div>
-            </div>
-            <span class="font-bold text-xs shrink-0 ${item.checked ? 'text-blue-700' : 'text-slate-400'}">¥${item.price.toLocaleString()}</span>
-          `;
-          pContainer.appendChild(div);
-        });
-        document.getElementById('procurementTotalBox').innerText = '¥ ' + totalCost.toLocaleString();
-        document.getElementById('headerBudgetTotal').innerText = '¥ ' + totalCost.toLocaleString();
-        document.getElementById('budgetRemainBox').innerText = `距离5万预算上限还余 ¥${(50000 - totalCost).toLocaleString()}`;
-      }
-
-      const allChecks = [
-        ...state.checklistMod1,
-        ...state.checklistMod2,
-        ...state.checklistMod3,
-        ...state.checklistMod4,
-        ...state.checklistMod5,
-        ...state.checklistMod7,
-        ...state.checklistMod8,
-        ...state.checklistMod9,
-        ...state.checklistMod10
-      ];
-      const doneCount = allChecks.filter(i => i.done).length;
-      const pct = Math.round((doneCount / allChecks.length) * 100);
-      document.getElementById('globalProgressBar').style.width = pct + '%';
-      document.getElementById('globalProgressText').innerText = `${pct}% (${doneCount}/${allChecks.length})`;
     }
 
-    function switchTab(tabId) {
-      ['mod1', 'mod2', 'mod3', 'mod4', 'mod5', 'mod6', 'mod7', 'mod8', 'mod9', 'mod10'].forEach(id => {
-        document.getElementById('tab-' + id).classList.add('hidden');
-        const btn = document.getElementById('btn-' + id);
-        btn.classList.remove('tab-active');
-        btn.classList.add('text-slate-600', 'hover:bg-slate-100');
-      });
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
-      const activeBtn = document.getElementById('btn-' + tabId);
-      activeBtn.classList.add('tab-active');
-      activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
-    }
-
-    function openSyncModal() {
-      const code = btoa(encodeURIComponent(JSON.stringify(state)));
-      document.getElementById('syncCodeInput').value = code;
-      document.getElementById('syncMsg').classList.add('hidden');
-      document.getElementById('syncModal').classList.remove('hidden');
-    }
-
-    function closeSyncModal() {
-      document.getElementById('syncModal').classList.add('hidden');
-    }
-
-    function copySyncCode() {
-      const input = document.getElementById('syncCodeInput');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      const msg = document.getElementById('syncMsg');
-      msg.innerText = '✅ 状态码已复制！可发送至微信在另一台设备粘贴导入。';
-      msg.classList.remove('hidden');
-    }
-
-    function importSyncCode() {
+    function fallbackCopy(text, onSuccess) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
       try {
-        const raw = document.getElementById('syncCodeInput').value.trim();
-        const decoded = JSON.parse(decodeURIComponent(atob(raw)));
-        if (decoded && decoded.checklistMod1) {
-          state = { ...state, ...decoded };
-          saveState();
-          const msg = document.getElementById('syncMsg');
-          msg.innerText = '🎉 跨端状态导入成功！页面数据已全面同步。';
-          msg.classList.remove('hidden');
-        }
+        document.execCommand('copy');
+        onSuccess();
       } catch (e) {
-        alert('状态码格式有误，请确认复制了完整的字符串！');
+        alert('浏览器拦截了自动复制，请手动框选文本按 Ctrl+C 复制。');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // 按索引安全复制 Prompt（彻底解决原版单引号截断 Bug）
+    function copyPromptByIndex(idx, btnId) {
+      if (!currentLessonObj || !currentLessonObj.prompts || !currentLessonObj.prompts[idx]) return;
+      copyToClipboard(currentLessonObj.prompts[idx].content, btnId, `已复制 Prompt #0${idx + 1}！`);
+    }
+
+    function copyOpeningScript(btnId) {
+      if (!currentLessonObj || !currentLessonObj.openingScript) return;
+      copyToClipboard(currentLessonObj.openingScript, btnId, '已复制名师破冰逐字稿！');
+    }
+
+    function toggleProjector() {
+      isProjector = !isProjector;
+      const body = document.getElementById('appBody');
+      const btn = document.getElementById('projBtn');
+      if (isProjector) {
+        body.classList.add('projector-mode');
+        btn.className = 'text-xs bg-amber-500 text-slate-950 px-3 py-2 rounded-xl font-bold transition flex items-center';
+      } else {
+        body.classList.remove('projector-mode');
+        btn.className = 'text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center';
       }
     }
 
-    function calcRevenue() {
-      const l0 = parseInt(document.getElementById('slider-l0').value);
-      const l1 = parseInt(document.getElementById('slider-l1').value);
-      const l2 = parseInt(document.getElementById('slider-l2').value);
-      const l3 = parseInt(document.getElementById('slider-l3').value);
-
-      document.getElementById('val-l0').innerText = `${l0} 人`;
-      document.getElementById('val-l1').innerText = `${l1} 人`;
-      document.getElementById('val-l2').innerText = `${l2} 单`;
-      document.getElementById('val-l3').innerText = `${l3} 单`;
-
-      const r0 = Math.round(l0 * 39.9);
-      const r1 = l1 * 1280;
-      const r2 = l2 * 3500;
-      const r3 = l3 * 12000;
-      const total = r0 + r1 + r2 + r3;
-      const assistantCost = Math.round(l1 * 100);
-      const net = Math.max(0, total - 3500 - assistantCost);
-
-      document.getElementById('rev-l0').innerText = '¥' + r0.toLocaleString();
-      document.getElementById('rev-l1').innerText = '¥' + r1.toLocaleString();
-      document.getElementById('rev-l2').innerText = '¥' + r2.toLocaleString();
-      document.getElementById('rev-l3').innerText = '¥' + r3.toLocaleString();
-      document.getElementById('totalRev').innerText = '¥ ' + total.toLocaleString();
-      document.getElementById('netProfit').innerText = '¥ ' + net.toLocaleString();
+    function toggleStudentMode() {
+      isStudentMode = !isStudentMode;
+      const btn = document.getElementById('studentModeBtn');
+      const banner = document.getElementById('studentModeBanner');
+      if (isStudentMode) {
+        btn.className = 'text-xs bg-emerald-500 text-slate-950 px-3 py-2 rounded-xl font-bold transition flex items-center';
+        btn.innerHTML = '<i class="fa-solid fa-eye mr-1.5"></i>退出纯净版';
+        banner.classList.remove('hidden');
+      } else {
+        btn.className = 'text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1.5"></i>学员投屏纯净版';
+        banner.classList.add('hidden');
+      }
+      if (currentLessonObj) renderLesson(currentLessonObj);
     }
 
-    function resetAllData() {
-      if (confirm('确定要重置看板的所有勾选与自定义状态吗？')) {
-        localStorage.removeItem('ts_ai_studio_v10');
-        location.reload();
+    function toggleLessonTaught(lessonId) {
+      if (taughtSet.has(lessonId)) {
+        taughtSet.delete(lessonId);
+        showToast('已取消备课完成标记');
+      } else {
+        taughtSet.add(lessonId);
+        showToast('已标记本讲备课/授课完成！');
+      }
+      saveTaughtState();
+      renderSidebar();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      renderSidebar();
+    }
+
+    function navigateLesson(offset) {
+      if (!currentFilteredList.length || !currentLessonId) return;
+      const idx = currentFilteredList.findIndex(m => m.id === currentLessonId);
+      const nextIdx = idx + offset;
+      if (nextIdx >= 0 && nextIdx < currentFilteredList.length) {
+        currentLessonId = currentFilteredList[nextIdx].id;
+        renderSidebar();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
-    renderUI();
-    switchScript(0);
-    switchCourse(2);
-    switchVideoScript(0);
-    switchDoc(0);
-    switchPrompt(0);
-    switchCode(0);
-    switchDual(0);
-    switchB2B(0);
-    calcRevenue();
+    function matchesQuery(lesson, q) {
+      if (!q) return true;
+      const lower = q.toLowerCase();
+      const hay = [
+        lesson.id,
+        lesson.badge,
+        lesson.title,
+        lesson.insight,
+        lesson.deliverable,
+        lesson.homework,
+        ...(lesson.steps || []).map(s => `${s.title} ${s.detail}`),
+        ...(lesson.prompts || []).map(p => `${p.name} ${p.content}`),
+        ...(lesson.troubleshooting || []).map(t => `${t.q} ${t.a}`)
+      ].join(' ').toLowerCase();
+      return hay.includes(lower);
+    }
+
+    function renderSidebar() {
+      const modules = Array.isArray(window.COURSE_MODULES) ? window.COURSE_MODULES : [];
+      document.getElementById('totalLessonsBadge').innerText = `已载入 ${modules.length} 讲`;
+      const taughtCount = modules.filter(m => taughtSet.has(m.id)).length;
+      document.getElementById('taughtProgressBadge').innerText = `已备课 ${taughtCount}/${modules.length}`;
+
+      const filter = document.getElementById('courseFilter').value;
+      const query = (document.getElementById('searchInput').value || '').trim();
+      document.getElementById('clearSearchBtn').classList.toggle('hidden', !query);
+
+      const listEl = document.getElementById('lessonList');
+      listEl.innerHTML = '';
+
+      if (modules.length === 0) {
+        listEl.innerHTML = `<div class="text-xs text-rose-400 p-4 text-center">未检测到课程数据</div>`;
+        document.getElementById('lessonContentArea').innerHTML = `
+          <div class="bg-rose-950/30 border border-rose-500/40 rounded-2xl p-8 text-center space-y-3">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-rose-400"></i>
+            <h2 class="text-lg font-bold text-white">未成功加载 course_data.js 课程数据库</h2>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+              请确认 GitHub 仓库根目录下已存在 <code class="text-amber-300">course_data.js</code> 文件，且文件内无 JS 语法报错（可按 F12 查看 Console 控制台定位）。
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = modules.filter(m => (filter === 'ALL' || m.category === filter) && matchesQuery(m, query));
+      currentFilteredList = filtered;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">当前筛选或搜索词下暂无匹配课程</div>`;
+        document.getElementById('lessonContentArea').innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center space-y-3">
+            <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-500"></i>
+            <div class="text-sm font-bold text-slate-300">没有找到匹配的课程内容</div>
+            <button onclick="document.getElementById('courseFilter').value='ALL'; clearSearch();" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-bold transition">重置筛选条件</button>
+          </div>
+        `;
+        return;
+      }
+
+      if (!currentLessonId || !filtered.find(m => m.id === currentLessonId)) {
+        currentLessonId = filtered[0].id;
+      }
+
+      filtered.forEach(item => {
+        const active = item.id === currentLessonId;
+        const isDone = taughtSet.has(item.id);
+        const btn = document.createElement('button');
+        btn.onclick = () => {
+          currentLessonId = item.id;
+          renderSidebar();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        btn.className = `w-full text-left p-3 rounded-xl transition flex flex-col gap-1 ${active ? 'lesson-active' : 'bg-slate-800/50 hover:bg-slate-800 text-slate-300 border border-slate-800'}`;
+        btn.innerHTML = `
+          <div class="flex items-center justify-between w-full gap-1">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded truncate ${active ? 'bg-white/20 text-white' : 'bg-slate-700 text-slate-300'}">${escapeHtml(item.badge)}</span>
+            <span class="text-[10px] shrink-0 flex items-center gap-1 ${isDone ? 'text-emerald-300 font-bold' : 'opacity-70'}">
+              ${isDone ? '<i class="fa-solid fa-circle-check"></i>已备' : escapeHtml(item.id)}
+            </span>
+          </div>
+          <div class="font-bold text-xs sm:text-sm leading-snug mt-0.5">${escapeHtml(item.title)}</div>
+        `;
+        listEl.appendChild(btn);
+      });
+
+      const activeObj = filtered.find(m => m.id === currentLessonId) || filtered[0];
+      if (activeObj) renderLesson(activeObj);
+    }
+
+    function renderLesson(lesson) {
+      currentLessonObj = lesson;
+      const container = document.getElementById('lessonContentArea');
+      if (!lesson) return;
+
+      const isDone = taughtSet.has(lesson.id);
+      const curIdx = currentFilteredList.findIndex(m => m.id === lesson.id);
+      const prevLesson = curIdx > 0 ? currentFilteredList[curIdx - 1] : null;
+      const nextLesson = curIdx >= 0 && curIdx < currentFilteredList.length - 1 ? currentFilteredList[curIdx + 1] : null;
+
+      const stepsHtml = (lesson.steps || []).map((s, idx) => `
+        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-1.5 print-card">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-bold text-blue-400 text-sm">Step ${idx + 1}：${escapeHtml(s.title)}</span>
+            <span class="text-xs bg-slate-900 text-slate-400 px-2.5 py-0.5 rounded-full font-mono">${escapeHtml(s.time || '')}</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(s.detail)}</p>
+        </div>
+      `).join('');
+
+      const promptsHtml = (lesson.prompts || []).map((p, idx) => {
+        const btnId = `copy-p-${idx}`;
+        return `
+          <div class="rounded-xl bg-slate-950 border border-emerald-500/30 p-4 space-y-2.5 print-card">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-bold text-emerald-400 text-xs sm:text-sm"><i class="fa-solid fa-terminal mr-1.5"></i>${escapeHtml(p.name)}</span>
+              <button id="${btnId}" onclick="copyPromptByIndex(${idx}, '${btnId}')" class="no-print text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shrink-0">
+                <i class="fa-regular fa-copy mr-1"></i>一键复制 Prompt
+              </button>
+            </div>
+            <pre class="text-xs text-slate-200 font-mono whitespace-pre-wrap break-words leading-relaxed bg-slate-900 p-3.5 rounded-lg border border-slate-800 overflow-x-auto">${escapeHtml(p.content)}</pre>
+          </div>
+        `;
+      }).join('');
+
+      const faqHtml = (lesson.troubleshooting || []).map(f => `
+        <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs sm:text-sm space-y-1 print-card">
+          <div class="font-bold text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>课堂高频卡点：${escapeHtml(f.q)}</div>
+          <div class="text-slate-300 leading-relaxed pl-5">💡 <b>秒解方案：</b>${escapeHtml(f.a)}</div>
+        </div>
+      `).join('');
+
+      const teacherScriptBlock = isStudentMode ? '' : `
+        <div id="teacherScriptSection" class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3 print-card">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-bold text-base text-white flex items-center">
+              <i class="fa-solid fa-microphone-lines text-blue-400 mr-2"></i>一、 名师破冰引入与降维比喻（前 15 分钟逐字稿）
+              <span class="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-normal no-print">仅讲师可见</span>
+            </h3>
+            <button id="copy-script-btn" onclick="copyOpeningScript('copy-script-btn')" class="no-print text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition">
+              <i class="fa-regular fa-copy mr-1"></i>复制逐字稿
+            </button>
+          </div>
+          <div class="p-4 rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950/60 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">${escapeHtml(lesson.openingScript)}</div>
+        </div>
+      `;
+
+      const bottomGridBlock = isStudentMode ? `
+        <div class="bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 space-y-3 print-card">
+          <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md">随堂实战考核 & 课后必交作业</span>
+          <h4 class="font-bold text-base text-white pt-1">本讲结课任务</h4>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${escapeHtml(lesson.homework)}</p>
+        </div>
+      ` : `
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div id="teacherFaqSection" class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3 print-card">
+            <h3 class="font-bold text-base text-white flex items-center">
+              <i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>四、 助教巡场排障指南（防卡壳锦囊）
+              <span class="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-normal no-print">内部锦囊</span>
+            </h3>
+            <div class="space-y-2.5">${faqHtml}</div>
+          </div>
+          <div class="md:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 flex flex-col justify-between space-y-4 print-card">
+            <div class="space-y-2">
+              <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md">五、 随堂实战考核 & 晒单作业</span>
+              <h4 class="font-bold text-base text-white pt-1">本讲结课必交作业</h4>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(lesson.homework)}</p>
+            </div>
+            <div class="pt-3 border-t border-white/10 text-xs text-amber-300">
+              💡 <b>助教提醒：</b>请督促学员在离场前将作品截图发至班级飞书群，择优收录入《唐山AI创客作品墙》。
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = `
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-lg">${escapeHtml(lesson.badge)}</span>
+              <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-lg">${escapeHtml(lesson.id)}</span>
+              <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i>${escapeHtml(lesson.duration || '120 分钟')}</span>
+            </div>
+            <button onclick="toggleLessonTaught('${escapeHtml(lesson.id)}')" class="no-print text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center ${isDone ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-slate-800 text-slate-300 border border-slate-700 hover:border-emerald-500 hover:text-emerald-300'}">
+              <i class="fa-solid ${isDone ? 'fa-circle-check' : 'fa-circle-plus'} mr-1.5"></i>${isDone ? '已备课 / 已授课' : '标记已备课'}
+            </button>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white leading-snug">${escapeHtml(lesson.title)}</h2>
+          <div class="text-xs sm:text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2.5 rounded-xl">
+            <b>🎯 本讲课堂硬核交付物：</b>${escapeHtml(lesson.deliverable || '学员自带电脑当场跑通成品')}
+          </div>
+          ${isStudentMode ? '' : `
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <b class="text-amber-300">🔍 全网最新趋势与唐山学情洞察：</b>${escapeHtml(lesson.insight)}
+          </p>`}
+        </div>
+
+        ${teacherScriptBlock}
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i>${isStudentMode ? '一' : '二'}、 课堂核心工具实操步骤（BYOD 投屏跟练流）</h3>
+          <div class="space-y-3">${stepsHtml}</div>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 mr-2"></i>${isStudentMode ? '二' : '三'}、 随堂工业级 Prompt / 代码模板库（一键复制使用）</h3>
+          <div class="space-y-4">${promptsHtml}</div>
+        </div>
+
+        ${bottomGridBlock}
+
+        <!-- 上一讲 / 下一讲快捷翻页栏 -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 no-print">
+          <button onclick="navigateLesson(-1)" ${!prevLesson ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center ${prevLesson ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700' : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'}">
+            <i class="fa-solid fa-arrow-left mr-2"></i>${prevLesson ? '上一讲：' + escapeHtml(prevLesson.badge) : '已是当前列表第一讲'}
+          </button>
+          <button onclick="navigateLesson(1)" ${!nextLesson ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center ${nextLesson ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'}">
+            ${nextLesson ? '下一讲：' + escapeHtml(nextLesson.badge) : '已是当前列表最后一讲'}<i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    window.onload = renderSidebar;
   </script>
 </body>
 </html>

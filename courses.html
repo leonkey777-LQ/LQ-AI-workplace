@@ -3,74 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>糖玩 AI 实验室 · 深度教研与课堂实操门户</title>
+  <title>糖玩 AI 实验室 · 深度教研与课堂实操门户 v2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
-    .lesson-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+    .lesson-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3); }
     .projector-mode { font-size: 118% !important; }
+    .projector-mode pre { font-size: 0.95rem !important; line-height: 1.75 !important; }
+
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* 打印 / 导出 PDF 讲义专用白底省墨样式 */
+    @media print {
+      body { background: #ffffff !important; color: #0f172a !important; font-size: 12pt !important; }
+      header, aside, .no-print { display: none !important; }
+      main { grid-column: span 12 / span 12 !important; width: 100% !important; max-width: 100% !important; }
+      .print-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; break-inside: avoid; box-shadow: none !important; }
+      .print-card h2, .print-card h3, .print-card h4, .print-card p, .print-card div, .print-card span { color: #0f172a !important; }
+      pre { background: #f8fafc !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; white-space: pre-wrap !important; word-break: break-word !important; }
+    }
   </style>
 </head>
 <body id="appBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
   <!-- 顶部导航栏 -->
-  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
+  <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold shadow-lg">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold shadow-lg shrink-0">
           <i class="fa-solid fa-book-open-reader"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课程教研与实操门户</h1>
+          <div class="flex items-center flex-wrap gap-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课堂教研门户</h1>
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v2.0</span>
             <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">已载入 0 讲</span>
+            <span id="taughtProgressBadge" class="hidden sm:inline-block bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">已备课 0/0</span>
           </div>
-          <p class="text-xs text-slate-400 hidden sm:block">前软件工程师 × 国际学校雅思名师主理 | 路南小市街区教室 & 路北沙龙投屏专用系统</p>
+          <p class="text-xs text-slate-400 hidden lg:block mt-0.5">前软件工程师 × 国际学校雅思名师主理 | 路南小市街区教室 & 路北沙龙投屏专用系统</p>
         </div>
       </div>
 
       <!-- 工具按钮区 -->
-      <div class="flex items-center space-x-2.5">
+      <div class="flex flex-wrap items-center gap-2">
         <select id="courseFilter" onchange="renderSidebar()" class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500">
           <option value="ALL">📚 全部课程模块</option>
           <option value="L0">⚡ L0 周末破冰沙龙</option>
           <option value="A">💼 班型A：AI职场提效班 (4讲)</option>
           <option value="B">🎬 班型B：AIGC自媒体副业班 (5讲)</option>
           <option value="C">💻 班型C：Vibe Coding创客班 (6讲)</option>
-          <option value="B2B">🏢 L3 唐山B端企业内训专题</option>
+          <option value="B2B">🏢 L3 唐山B端企业内训专题 (4讲)</option>
         </select>
 
-        <button onclick="toggleProjector()" id="projBtn" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
-          <i class="fa-solid fa-tv mr-1.5"></i>教室投屏放大
+        <button onclick="toggleStudentMode()" id="studentModeBtn" title="开启后自动隐藏讲师逐字稿与助教排障内参，防止投屏剧透" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-eye-slash mr-1.5"></i>学员投屏纯净版
+        </button>
+
+        <button onclick="toggleProjector()" id="projBtn" title="放大全屏字号，适配教室100寸投影幕布" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-tv mr-1.5"></i>字号放大
+        </button>
+
+        <button onclick="window.print()" title="打印当前课程或另存为PDF纸质讲义" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition hidden md:flex items-center">
+          <i class="fa-solid fa-print mr-1.5"></i>导出PDF
         </button>
 
         <a href="index.html" class="text-xs bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
-          <i class="fa-solid fa-gauge-high mr-1.5"></i>返回老板看板
+          <i class="fa-solid fa-gauge-high mr-1.5"></i>老板看板
         </a>
       </div>
     </div>
   </header>
 
+  <!-- 学员投屏纯净模式提示条 -->
+  <div id="studentModeBanner" class="hidden bg-emerald-950/90 border-b border-emerald-500/30 text-emerald-200 text-xs py-2 px-4 text-center no-print">
+    <i class="fa-solid fa-shield-halved mr-1.5 text-emerald-400"></i>
+    当前已开启 <b>【学员投屏纯净模式】</b>：讲师开场逐字稿、助教排障话术与内部转化锦囊已自动隐藏，可放心投屏教室大电视！
+    <button onclick="toggleStudentMode()" class="ml-3 underline text-white hover:text-emerald-300 font-bold">退出纯净模式</button>
+  </div>
+
   <!-- 主体两栏布局 -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
 
     <!-- 左侧：课程章节目录树 -->
-    <aside class="lg:col-span-3 space-y-4">
-      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-        <div class="flex justify-between items-center mb-3 px-1">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">每日深度教研目录</h2>
-          <span class="text-[11px] text-blue-400">读取 course_data.js</span>
+    <aside class="lg:col-span-3 space-y-4 no-print">
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">课程教研目录</h2>
+          <span class="text-[11px] text-blue-400 font-mono">course_data.js</span>
         </div>
-        <div id="lessonList" class="space-y-1.5 max-h-[70vh] overflow-y-auto pr-1">
+
+        <!-- 实时关键词搜索框 -->
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass text-slate-500 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="searchInput" type="text" oninput="renderSidebar()" placeholder="搜索课名 / Prompt / 卡点..." class="w-full bg-slate-950 border border-slate-700/80 focus:border-blue-500 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none">
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-slate-500 hover:text-slate-300 text-xs absolute right-2.5 top-1/2 -translate-y-1/2">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
+
+        <div id="lessonList" class="space-y-1.5 max-h-[64vh] overflow-y-auto pr-1">
           <!-- JS 动态渲染课表 -->
         </div>
       </div>
 
       <div class="bg-gradient-to-br from-indigo-950/80 to-slate-900 rounded-2xl p-4 border border-indigo-800/40 text-xs space-y-2">
-        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>每日 5 秒增量更新指南</div>
-        <p class="text-slate-400 leading-relaxed">每天早上 9:00 收到新课程模块后，无需修改本网页，直接打开 GitHub 上的 <code class="text-emerald-300">course_data.js</code>，将新代码粘贴到文件最底部即可！</p>
+        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>教研门户使用提示</div>
+        <ul class="text-slate-400 leading-relaxed space-y-1 list-disc pl-4">
+          <li>教室大屏投屏前，点击顶部 <b class="text-emerald-300">学员投屏纯净版</b> 即可隐藏逐字稿防剧透。</li>
+          <li>每讲新增数据时，直接追加到 GitHub 的 <code class="text-emerald-300">course_data.js</code> 末尾即可自动热更新。</li>
+        </ul>
       </div>
     </aside>
 
@@ -81,12 +128,97 @@
 
   </div>
 
+  <!-- 全局复制成功 Toast 提示 -->
+  <div id="globalToast" class="fixed bottom-6 right-6 z-50 hidden bg-emerald-600 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-2xl border border-emerald-400/40 flex items-center space-x-2 no-print">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="globalToastText">已成功复制到剪贴板！</span>
+  </div>
+
   <!-- 引入增量课程数据包 -->
   <script src="course_data.js"></script>
 
   <script>
     let currentLessonId = null;
+    let currentLessonObj = null;
+    let currentFilteredList = [];
     let isProjector = false;
+    let isStudentMode = false;
+    let toastTimer = null;
+
+    // 读取本地备课/授课完成状态
+    let taughtSet = new Set(JSON.parse(localStorage.getItem('tangplay_taught_lessons_v2') || '[]'));
+
+    function saveTaughtState() {
+      localStorage.setItem('tangplay_taught_lessons_v2', JSON.stringify(Array.from(taughtSet)));
+    }
+
+    // HTML 实体安全转义：彻底防止 Prompt 里的 <script> / <meta> 标签被浏览器吞噬或触发 XSS
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('globalToast');
+      document.getElementById('globalToastText').innerText = message;
+      toast.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('hidden'), 2000);
+    }
+
+    // 兼容 HTTPS 与本地 file:// 双击预览的安全复制函数
+    function copyToClipboard(text, btnId, successMsg) {
+      const finish = () => {
+        showToast(successMsg || '已复制到剪贴板，可直接粘贴发飞书群！');
+        if (btnId) {
+          const btn = document.getElementById(btnId);
+          if (btn) {
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i>已复制';
+            setTimeout(() => { btn.innerHTML = old; }, 1600);
+          }
+        }
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+      } else {
+        fallbackCopy(text, finish);
+      }
+    }
+
+    function fallbackCopy(text, onSuccess) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+        onSuccess();
+      } catch (e) {
+        alert('浏览器拦截了自动复制，请手动框选文本按 Ctrl+C 复制。');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // 按索引安全复制 Prompt（彻底解决原版单引号截断 Bug）
+    function copyPromptByIndex(idx, btnId) {
+      if (!currentLessonObj || !currentLessonObj.prompts || !currentLessonObj.prompts[idx]) return;
+      copyToClipboard(currentLessonObj.prompts[idx].content, btnId, `已复制 Prompt #0${idx + 1}！`);
+    }
+
+    function copyOpeningScript(btnId) {
+      if (!currentLessonObj || !currentLessonObj.openingScript) return;
+      copyToClipboard(currentLessonObj.openingScript, btnId, '已复制名师破冰逐字稿！');
+    }
 
     function toggleProjector() {
       isProjector = !isProjector;
@@ -101,16 +233,106 @@
       }
     }
 
+    function toggleStudentMode() {
+      isStudentMode = !isStudentMode;
+      const btn = document.getElementById('studentModeBtn');
+      const banner = document.getElementById('studentModeBanner');
+      if (isStudentMode) {
+        btn.className = 'text-xs bg-emerald-500 text-slate-950 px-3 py-2 rounded-xl font-bold transition flex items-center';
+        btn.innerHTML = '<i class="fa-solid fa-eye mr-1.5"></i>退出纯净版';
+        banner.classList.remove('hidden');
+      } else {
+        btn.className = 'text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1.5"></i>学员投屏纯净版';
+        banner.classList.add('hidden');
+      }
+      if (currentLessonObj) renderLesson(currentLessonObj);
+    }
+
+    function toggleLessonTaught(lessonId) {
+      if (taughtSet.has(lessonId)) {
+        taughtSet.delete(lessonId);
+        showToast('已取消备课完成标记');
+      } else {
+        taughtSet.add(lessonId);
+        showToast('已标记本讲备课/授课完成！');
+      }
+      saveTaughtState();
+      renderSidebar();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      renderSidebar();
+    }
+
+    function navigateLesson(offset) {
+      if (!currentFilteredList.length || !currentLessonId) return;
+      const idx = currentFilteredList.findIndex(m => m.id === currentLessonId);
+      const nextIdx = idx + offset;
+      if (nextIdx >= 0 && nextIdx < currentFilteredList.length) {
+        currentLessonId = currentFilteredList[nextIdx].id;
+        renderSidebar();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function matchesQuery(lesson, q) {
+      if (!q) return true;
+      const lower = q.toLowerCase();
+      const hay = [
+        lesson.id,
+        lesson.badge,
+        lesson.title,
+        lesson.insight,
+        lesson.deliverable,
+        lesson.homework,
+        ...(lesson.steps || []).map(s => `${s.title} ${s.detail}`),
+        ...(lesson.prompts || []).map(p => `${p.name} ${p.content}`),
+        ...(lesson.troubleshooting || []).map(t => `${t.q} ${t.a}`)
+      ].join(' ').toLowerCase();
+      return hay.includes(lower);
+    }
+
     function renderSidebar() {
-      const modules = window.COURSE_MODULES || [];
+      const modules = Array.isArray(window.COURSE_MODULES) ? window.COURSE_MODULES : [];
       document.getElementById('totalLessonsBadge').innerText = `已载入 ${modules.length} 讲`;
+      const taughtCount = modules.filter(m => taughtSet.has(m.id)).length;
+      document.getElementById('taughtProgressBadge').innerText = `已备课 ${taughtCount}/${modules.length}`;
+
       const filter = document.getElementById('courseFilter').value;
+      const query = (document.getElementById('searchInput').value || '').trim();
+      document.getElementById('clearSearchBtn').classList.toggle('hidden', !query);
+
       const listEl = document.getElementById('lessonList');
       listEl.innerHTML = '';
 
-      const filtered = modules.filter(m => filter === 'ALL' || m.category === filter);
+      if (modules.length === 0) {
+        listEl.innerHTML = `<div class="text-xs text-rose-400 p-4 text-center">未检测到课程数据</div>`;
+        document.getElementById('lessonContentArea').innerHTML = `
+          <div class="bg-rose-950/30 border border-rose-500/40 rounded-2xl p-8 text-center space-y-3">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-rose-400"></i>
+            <h2 class="text-lg font-bold text-white">未成功加载 course_data.js 课程数据库</h2>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+              请确认 GitHub 仓库根目录下已存在 <code class="text-amber-300">course_data.js</code> 文件，且文件内无 JS 语法报错（可按 F12 查看 Console 控制台定位）。
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = modules.filter(m => (filter === 'ALL' || m.category === filter) && matchesQuery(m, query));
+      currentFilteredList = filtered;
+
       if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">该分类下暂未追加课程数据，等待每日9:00自动教研推送...</div>`;
+        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">当前筛选或搜索词下暂无匹配课程</div>`;
+        document.getElementById('lessonContentArea').innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center space-y-3">
+            <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-500"></i>
+            <div class="text-sm font-bold text-slate-300">没有找到匹配的课程内容</div>
+            <button onclick="document.getElementById('courseFilter').value='ALL'; clearSearch();" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-bold transition">重置筛选条件</button>
+          </div>
+        `;
         return;
       }
 
@@ -120,115 +342,159 @@
 
       filtered.forEach(item => {
         const active = item.id === currentLessonId;
+        const isDone = taughtSet.has(item.id);
         const btn = document.createElement('button');
-        btn.onclick = () => { currentLessonId = item.id; renderSidebar(); renderLesson(item); };
+        btn.onclick = () => {
+          currentLessonId = item.id;
+          renderSidebar();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
         btn.className = `w-full text-left p-3 rounded-xl transition flex flex-col gap-1 ${active ? 'lesson-active' : 'bg-slate-800/50 hover:bg-slate-800 text-slate-300 border border-slate-800'}`;
         btn.innerHTML = `
-          <div class="flex items-center justify-between w-full">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${active ? 'bg-white/20 text-white' : 'bg-slate-700 text-slate-300'}">${item.badge}</span>
-            <span class="text-[10px] opacity-75">${item.updateDate || '最新教研'}</span>
+          <div class="flex items-center justify-between w-full gap-1">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded truncate ${active ? 'bg-white/20 text-white' : 'bg-slate-700 text-slate-300'}">${escapeHtml(item.badge)}</span>
+            <span class="text-[10px] shrink-0 flex items-center gap-1 ${isDone ? 'text-emerald-300 font-bold' : 'opacity-70'}">
+              ${isDone ? '<i class="fa-solid fa-circle-check"></i>已备' : escapeHtml(item.id)}
+            </span>
           </div>
-          <div class="font-bold text-xs sm:text-sm leading-snug mt-0.5">${item.title}</div>
+          <div class="font-bold text-xs sm:text-sm leading-snug mt-0.5">${escapeHtml(item.title)}</div>
         `;
         listEl.appendChild(btn);
       });
 
-      const activeObj = modules.find(m => m.id === currentLessonId) || filtered[0];
+      const activeObj = filtered.find(m => m.id === currentLessonId) || filtered[0];
       if (activeObj) renderLesson(activeObj);
     }
 
-    function copyText(text, btnId) {
-      navigator.clipboard.writeText(text);
-      const btn = document.getElementById(btnId);
-      const old = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i>已复制！';
-      setTimeout(() => { btn.innerHTML = old; }, 1800);
-    }
-
     function renderLesson(lesson) {
+      currentLessonObj = lesson;
       const container = document.getElementById('lessonContentArea');
       if (!lesson) return;
 
+      const isDone = taughtSet.has(lesson.id);
+      const curIdx = currentFilteredList.findIndex(m => m.id === lesson.id);
+      const prevLesson = curIdx > 0 ? currentFilteredList[curIdx - 1] : null;
+      const nextLesson = curIdx >= 0 && curIdx < currentFilteredList.length - 1 ? currentFilteredList[curIdx + 1] : null;
+
       const stepsHtml = (lesson.steps || []).map((s, idx) => `
-        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-blue-400 text-sm">Step ${idx + 1}：${s.title}</span>
-            <span class="text-xs bg-slate-900 text-slate-400 px-2.5 py-0.5 rounded-full">${s.time || ''}</span>
+        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 space-y-1.5 print-card">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-bold text-blue-400 text-sm">Step ${idx + 1}：${escapeHtml(s.title)}</span>
+            <span class="text-xs bg-slate-900 text-slate-400 px-2.5 py-0.5 rounded-full font-mono">${escapeHtml(s.time || '')}</span>
           </div>
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${s.detail}</p>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(s.detail)}</p>
         </div>
       `).join('');
 
       const promptsHtml = (lesson.prompts || []).map((p, idx) => {
         const btnId = `copy-p-${idx}`;
-        const safePrompt = encodeURIComponent(p.content);
         return `
-          <div class="rounded-xl bg-slate-950 border border-emerald-500/30 p-4 space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-              <span class="font-bold text-emerald-400 text-xs sm:text-sm"><i class="fa-solid fa-terminal mr-1.5"></i>${p.name}</span>
-              <button id="${btnId}" onclick="copyText(decodeURIComponent('${safePrompt}'), '${btnId}')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shrink-0">
+          <div class="rounded-xl bg-slate-950 border border-emerald-500/30 p-4 space-y-2.5 print-card">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-bold text-emerald-400 text-xs sm:text-sm"><i class="fa-solid fa-terminal mr-1.5"></i>${escapeHtml(p.name)}</span>
+              <button id="${btnId}" onclick="copyPromptByIndex(${idx}, '${btnId}')" class="no-print text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shrink-0">
                 <i class="fa-regular fa-copy mr-1"></i>一键复制 Prompt
               </button>
             </div>
-            <pre class="text-xs text-slate-200 font-mono whitespace-pre-wrap leading-relaxed bg-slate-900 p-3.5 rounded-lg border border-slate-800 overflow-x-auto">${p.content}</pre>
+            <pre class="text-xs text-slate-200 font-mono whitespace-pre-wrap break-words leading-relaxed bg-slate-900 p-3.5 rounded-lg border border-slate-800 overflow-x-auto">${escapeHtml(p.content)}</pre>
           </div>
         `;
       }).join('');
 
       const faqHtml = (lesson.troubleshooting || []).map(f => `
-        <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs sm:text-sm space-y-1">
-          <div class="font-bold text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>课堂高频卡点：${f.q}</div>
-          <div class="text-slate-300 leading-relaxed pl-5">💡 <b>秒解方案：</b>${f.a}</div>
+        <div class="p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-xs sm:text-sm space-y-1 print-card">
+          <div class="font-bold text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>课堂高频卡点：${escapeHtml(f.q)}</div>
+          <div class="text-slate-300 leading-relaxed pl-5">💡 <b>秒解方案：</b>${escapeHtml(f.a)}</div>
         </div>
       `).join('');
 
-      container.innerHTML = `
-        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+      const teacherScriptBlock = isStudentMode ? '' : `
+        <div id="teacherScriptSection" class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3 print-card">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-lg">${lesson.badge}</span>
-              <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i>标准课时：${lesson.duration || '120 分钟'}</span>
-            </div>
-            <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg">
-              🎯 课堂交付物：${lesson.deliverable || '学员自带电脑当场跑通成品'}
-            </span>
+            <h3 class="font-bold text-base text-white flex items-center">
+              <i class="fa-solid fa-microphone-lines text-blue-400 mr-2"></i>一、 名师破冰引入与降维比喻（前 15 分钟逐字稿）
+              <span class="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-normal no-print">仅讲师可见</span>
+            </h3>
+            <button id="copy-script-btn" onclick="copyOpeningScript('copy-script-btn')" class="no-print text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition">
+              <i class="fa-regular fa-copy mr-1"></i>复制逐字稿
+            </button>
           </div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white">${lesson.title}</h2>
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
-            <b class="text-amber-300">🔍 全网最新趋势与学情洞察：</b>${lesson.insight}
-          </p>
+          <div class="p-4 rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950/60 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">${escapeHtml(lesson.openingScript)}</div>
         </div>
+      `;
 
-        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
-          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-microphone-lines text-blue-400 mr-2"></i>一、 名师破冰引入与降维比喻（前 15 分钟逐字稿）</h3>
-          <div class="p-4 rounded-xl bg-gradient-to-r from-slate-950 to-indigo-950/60 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line">${lesson.openingScript}</div>
+      const bottomGridBlock = isStudentMode ? `
+        <div class="bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 space-y-3 print-card">
+          <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md">随堂实战考核 & 课后必交作业</span>
+          <h4 class="font-bold text-base text-white pt-1">本讲结课任务</h4>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${escapeHtml(lesson.homework)}</p>
         </div>
-
-        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
-          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i>二、 课堂核心工具实操步骤（BYOD 投屏跟练流）</h3>
-          <div class="space-y-3">${stepsHtml}</div>
-        </div>
-
-        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
-          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 mr-2"></i>三、 随堂工业级 Prompt / 代码模板库（点击一键复制发飞书群）</h3>
-          <div class="space-y-4">${promptsHtml}</div>
-        </div>
-
+      ` : `
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
-            <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>四、 助教巡场排障指南（防卡壳锦囊）</h3>
+          <div id="teacherFaqSection" class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3 print-card">
+            <h3 class="font-bold text-base text-white flex items-center">
+              <i class="fa-solid fa-screwdriver-wrench text-amber-400 mr-2"></i>四、 助教巡场排障指南（防卡壳锦囊）
+              <span class="ml-2 text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-normal no-print">内部锦囊</span>
+            </h3>
             <div class="space-y-2.5">${faqHtml}</div>
           </div>
-          <div class="md:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 flex flex-col justify-between space-y-4">
+          <div class="md:col-span-5 bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 flex flex-col justify-between space-y-4 print-card">
             <div class="space-y-2">
               <span class="text-xs font-bold bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-md">五、 随堂实战考核 & 晒单作业</span>
               <h4 class="font-bold text-base text-white pt-1">本讲结课必交作业</h4>
-              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${lesson.homework}</p>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(lesson.homework)}</p>
             </div>
             <div class="pt-3 border-t border-white/10 text-xs text-amber-300">
               💡 <b>助教提醒：</b>请督促学员在离场前将作品截图发至班级飞书群，择优收录入《唐山AI创客作品墙》。
             </div>
           </div>
+        </div>
+      `;
+
+      container.innerHTML = `
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold bg-blue-600 text-white px-3 py-1 rounded-lg">${escapeHtml(lesson.badge)}</span>
+              <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-lg">${escapeHtml(lesson.id)}</span>
+              <span class="text-xs text-slate-400"><i class="fa-solid fa-clock mr-1"></i>${escapeHtml(lesson.duration || '120 分钟')}</span>
+            </div>
+            <button onclick="toggleLessonTaught('${escapeHtml(lesson.id)}')" class="no-print text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center ${isDone ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-slate-800 text-slate-300 border border-slate-700 hover:border-emerald-500 hover:text-emerald-300'}">
+              <i class="fa-solid ${isDone ? 'fa-circle-check' : 'fa-circle-plus'} mr-1.5"></i>${isDone ? '已备课 / 已授课' : '标记已备课'}
+            </button>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white leading-snug">${escapeHtml(lesson.title)}</h2>
+          <div class="text-xs sm:text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2.5 rounded-xl">
+            <b>🎯 本讲课堂硬核交付物：</b>${escapeHtml(lesson.deliverable || '学员自带电脑当场跑通成品')}
+          </div>
+          ${isStudentMode ? '' : `
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50">
+            <b class="text-amber-300">🔍 全网最新趋势与唐山学情洞察：</b>${escapeHtml(lesson.insight)}
+          </p>`}
+        </div>
+
+        ${teacherScriptBlock}
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-laptop-code text-emerald-400 mr-2"></i>${isStudentMode ? '一' : '二'}、 课堂核心工具实操步骤（BYOD 投屏跟练流）</h3>
+          <div class="space-y-3">${stepsHtml}</div>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 print-card">
+          <h3 class="font-bold text-base text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-purple-400 mr-2"></i>${isStudentMode ? '二' : '三'}、 随堂工业级 Prompt / 代码模板库（一键复制使用）</h3>
+          <div class="space-y-4">${promptsHtml}</div>
+        </div>
+
+        ${bottomGridBlock}
+
+        <!-- 上一讲 / 下一讲快捷翻页栏 -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 no-print">
+          <button onclick="navigateLesson(-1)" ${!prevLesson ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center ${prevLesson ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700' : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'}">
+            <i class="fa-solid fa-arrow-left mr-2"></i>${prevLesson ? '上一讲：' + escapeHtml(prevLesson.badge) : '已是当前列表第一讲'}
+          </button>
+          <button onclick="navigateLesson(1)" ${!nextLesson ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center ${nextLesson ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'}">
+            ${nextLesson ? '下一讲：' + escapeHtml(nextLesson.badge) : '已是当前列表最后一讲'}<i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
         </div>
       `;
     }

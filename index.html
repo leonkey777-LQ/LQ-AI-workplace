@@ -1133,13 +1133,6 @@
     switchDual(0);
     switchB2B(0);
     calcRevenue();
-    const syncedCount = localStorage.getItem('tangplay_total_lessons_count');
-    if (syncedCount && parseInt(syncedCount, 10) > 0) {
-      const t = document.getElementById('topCourseCount');
-      const s = document.getElementById('sideCourseCount');
-      if (t) t.innerText = syncedCount;
-      if (s) s.innerText = syncedCount;
-}
   </script>
 </body>
 </html>

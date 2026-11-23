@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>糖玩 AI 实验室 · 深度教研与课堂中控台 v3.1</title>
+  <title>糖玩 AI 实验室 · 深度教研与课堂中控台 v3.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
@@ -48,11 +48,11 @@
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课堂中控台</h1>
-            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v3.1</span>
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v3.2 极速版</span>
             <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">载入中...</span>
             <span id="taughtProgressBadge" class="hidden sm:inline-block bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">已备课 0/0</span>
           </div>
-          <p class="text-xs text-slate-400 hidden lg:block mt-0.5">前软件工程师 × 国际学校雅思名师主理 | 模块化教研 · Mermaid 架构图 · 变量填空 · 随堂扫码</p>
+          <p class="text-xs text-slate-400 hidden lg:block mt-0.5">前软件工程师 × 国际学校雅思名师主理 | 并行缓存引擎 · Mermaid 架构图 · 变量填空 · 随堂扫码</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-3">
         <div class="flex justify-between items-center px-1 gap-2">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">课程教研目录</h2>
-          <span id="dataSourceBadge" class="text-[10px] text-blue-400 font-mono bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md truncate">检测数据源...</span>
+          <span id="dataSourceBadge" class="text-[10px] text-blue-400 font-mono bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md truncate">并行载入中...</span>
         </div>
 
         <div class="relative">
@@ -122,16 +122,16 @@
         </div>
 
         <div id="lessonList" class="space-y-1.5 max-h-[62vh] overflow-y-auto pr-1">
-          <div class="text-xs text-slate-500 p-6 text-center">正在载入教研模块...</div>
+          <div class="text-xs text-slate-500 p-6 text-center">正在并行拉取教研模块...</div>
         </div>
       </div>
 
       <div id="teacherTipsCard" class="bg-gradient-to-br from-indigo-950/80 to-slate-900 rounded-2xl p-4 border border-indigo-800/40 text-xs space-y-2">
-        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>v3.1 课堂中控台秘籍</div>
+        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>v3.2 极速中控台秘籍</div>
         <ul class="text-slate-400 leading-relaxed space-y-1.5 list-disc pl-4">
-          <li>点击每个实操步骤右侧的 <b class="text-blue-300">计时</b> 可启动悬浮倒计时，精准把控 120 分钟节奏。</li>
-          <li>在 Prompt 上方的 <b class="text-emerald-300">变量填空器</b> 输入现场学员店名，下方源码实时替换并一键复制。</li>
-          <li>点击顶栏 <b class="text-blue-300">随堂扫码</b> 生成专属二维码，学员扫码直达纯净版伴学页。</li>
+          <li>全部 <code class="text-emerald-300">data/*.js</code> 采用并行拉取与版本缓存，改课只需更新 <code class="text-blue-300">manifest.js</code> 版本号。</li>
+          <li>点击实操步骤右侧的 <b class="text-blue-300">计时</b> 启动悬浮倒计时，精准把控 120 分钟节奏。</li>
+          <li>在 Prompt 上方的 <b class="text-emerald-300">变量填空器</b> 输入学员业务名，下方源码实时替换并一键复制。</li>
         </ul>
       </div>
     </aside>
@@ -139,7 +139,7 @@
     <!-- 右侧：单节课程深度讲义与课堂投屏工作台 -->
     <main class="lg:col-span-9 space-y-6" id="lessonContentArea">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400 text-sm">
-        正在载入课程数据库...
+        正在并行载入课程数据库...
       </div>
     </main>
 
@@ -363,7 +363,7 @@
     }
 
     // =========================================================================
-    // 2. 防卡死模块化加载引擎（适配 Cloudflare /courses、/courses/ 与 file://）
+    // 2. 并行加载 + 版本号缓存极速引擎 (v3.2 核心提速重构)
     // =========================================================================
     function resolveAssetPath(relPath) {
       if (window.location.protocol === 'file:') return relPath;
@@ -406,81 +406,87 @@
       });
     }
 
-    async function loadDataScriptSafe(relPath) {
+    async function fetchModuleCode(relPath, cacheTag) {
       const resolved = resolveAssetPath(relPath);
-      const bustUrl = resolved + '?v=' + Date.now();
-
-      if (window.location.protocol === 'file:') {
-        await loadScriptByTag(resolved, 6000);
-        return;
-      }
-
+      const url = resolved + (cacheTag ? '?v=' + encodeURIComponent(cacheTag) : '');
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 6000);
+      const timer = setTimeout(() => controller.abort(), 8000);
       try {
-        const res = await fetch(bustUrl, { cache: 'no-store', signal: controller.signal });
+        const res = await fetch(url, {
+          cache: cacheTag ? 'default' : 'no-cache',
+          signal: controller.signal
+        });
         if (!res.ok) throw new Error(`${relPath} (HTTP ${res.status})`);
         const code = await res.text();
         const trimmed = code.trim();
         if (!trimmed || trimmed.startsWith('<')) {
           throw new Error(`${relPath} 未找到（返回了HTML页面）`);
         }
-        try {
-          (new Function(code))();
-        } catch (syntaxErr) {
-          throw new Error(`${relPath} JS语法错误: ${syntaxErr.message}`);
-        }
+        return code;
       } finally {
         clearTimeout(timer);
       }
     }
 
-    // 后台非阻塞加载 Mermaid 与 QRCode（国内多源降级，绝不卡死主界面）
-    async function loadOptionalEnhancers() {
-      const mermaidCdns = [
-        'https://cdn.bootcdn.net/ajax/libs/mermaid/11.4.1/mermaid.min.js',
-        'https://unpkg.com/mermaid@11/dist/mermaid.min.js',
-        'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
-      ];
-      for (const url of mermaidCdns) {
-        if (window.mermaid) break;
-        try {
-          await loadScriptByTag(url, 5000);
+    // 后台非阻塞并行加载 Mermaid 与 QRCode（绝不阻塞课程正文秒开）
+    function loadOptionalEnhancers() {
+      const loadMermaid = (async () => {
+        const mermaidCdns = [
+          'https://cdn.bootcdn.net/ajax/libs/mermaid/11.4.1/mermaid.min.js',
+          'https://unpkg.com/mermaid@11/dist/mermaid.min.js',
+          'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
+        ];
+        for (const url of mermaidCdns) {
           if (window.mermaid) break;
-        } catch (e) {}
-      }
-      if (window.mermaid) {
-        window.mermaid.initialize({
-          startOnLoad: false,
-          theme: 'dark',
-          securityLevel: 'loose',
-          fontFamily: '-apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, sans-serif'
-        });
-        mermaidReady = true;
-        renderActiveMermaid();
-      }
+          try {
+            await loadScriptByTag(url, 5000);
+            if (window.mermaid) break;
+          } catch (e) {}
+        }
+        if (window.mermaid) {
+          window.mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            securityLevel: 'loose',
+            fontFamily: '-apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, sans-serif'
+          });
+          mermaidReady = true;
+          renderActiveMermaid();
+        }
+      })();
 
-      const qrCdns = [
-        'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
-      ];
-      for (const url of qrCdns) {
-        if (window.QRCode) break;
-        try {
-          await loadScriptByTag(url, 4000);
+      const loadQr = (async () => {
+        const qrCdns = [
+          'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+        ];
+        for (const url of qrCdns) {
           if (window.QRCode) break;
-        } catch (e) {}
-      }
+          try {
+            await loadScriptByTag(url, 4000);
+            if (window.QRCode) break;
+          } catch (e) {}
+        }
+      })();
+
+      return Promise.allSettled([loadMermaid, loadQr]);
     }
 
     async function bootCourseDatabase() {
+      const startTime = performance.now();
       const badgeEl = document.getElementById('dataSourceBadge');
       const failedNotes = [];
+      const isFileProto = window.location.protocol === 'file:';
 
       try {
         let manifestLoaded = false;
         try {
-          await loadDataScriptSafe('data/manifest.js');
+          if (isFileProto) {
+            await loadScriptByTag('data/manifest.js', 5000);
+          } else {
+            const manifestCode = await fetchModuleCode('data/manifest.js', null);
+            (new Function(manifestCode))();
+          }
           if (window.COURSE_MANIFEST && Array.isArray(window.COURSE_MANIFEST.files)) {
             manifestLoaded = true;
           }
@@ -489,21 +495,47 @@
         }
 
         if (manifestLoaded) {
-          badgeEl.innerText = '模块化: data/';
-          for (const filePath of window.COURSE_MANIFEST.files) {
-            try {
-              await loadDataScriptSafe(filePath);
-            } catch (err) {
-              failedNotes.push(err.message || filePath);
+          if (isFileProto) {
+            for (const fp of window.COURSE_MANIFEST.files) {
+              try { await loadScriptByTag(fp, 6000); }
+              catch (err) { failedNotes.push(err.message || fp); }
             }
+          } else {
+            // 核心提速：全部模块并行拉取 + 利用 manifest 版本号命中浏览器磁盘缓存
+            const verTag = (window.COURSE_MANIFEST.version || '3.2') + '-' + (window.COURSE_MANIFEST.updatedAt || '1');
+            const batch = await Promise.allSettled(
+              window.COURSE_MANIFEST.files.map(fp => fetchModuleCode(fp, verTag))
+            );
+            // 按 manifest 声明顺序依次执行，确保目录顺序严格一致且单文件故障隔离
+            batch.forEach((res, i) => {
+              const fp = window.COURSE_MANIFEST.files[i];
+              if (res.status === 'fulfilled') {
+                try {
+                  (new Function(res.value))();
+                } catch (syntaxErr) {
+                  failedNotes.push(`${fp} JS语法错误: ${syntaxErr.message}`);
+                }
+              } else {
+                failedNotes.push(res.reason ? res.reason.message : fp);
+              }
+            });
           }
+          const elapsed = Math.max(1, Math.round(performance.now() - startTime));
+          badgeEl.innerText = `模块化: data/ (${elapsed}ms)`;
         } else {
-          badgeEl.innerText = '单文件: course_data.js';
+          // 兼容模式：读取根目录旧 course_data.js
           try {
-            await loadDataScriptSafe('course_data.js');
+            if (isFileProto) {
+              await loadScriptByTag('course_data.js', 6000);
+            } else {
+              const legacyCode = await fetchModuleCode('course_data.js', null);
+              (new Function(legacyCode))();
+            }
           } catch (err) {
             failedNotes.push(err.message || 'course_data.js');
           }
+          const elapsed = Math.max(1, Math.round(performance.now() - startTime));
+          badgeEl.innerText = `单文件: course_data.js (${elapsed}ms)`;
         }
 
         // 去重防重复追加
@@ -514,7 +546,7 @@
           return true;
         });
 
-        // 同步最新总课数到本地存储，供 index.html 自动读取显示
+        // 自动同步最新总课数到 localStorage，供首页 index.html 动态展示
         if (window.COURSE_MODULES.length > 0) {
           localStorage.setItem('tangplay_total_lessons_count', String(window.COURSE_MODULES.length));
         }
@@ -538,7 +570,7 @@
         `;
       }
 
-      // 课程文字渲染完毕后再异步拉取 Mermaid 和 QRCode
+      // 主体文字秒开后，后台并行拉取 Mermaid 与二维码增强库
       loadOptionalEnhancers();
     }
 
@@ -1191,7 +1223,6 @@
       renderActiveMermaid();
     }
 
-    // 使用 DOMContentLoaded 立即启动，绝不等待被屏蔽的外部字体/CDN
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', bootCourseDatabase);
     } else {

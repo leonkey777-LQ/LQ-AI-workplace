@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>唐山O2O个人AI工作室 · 创业全景指挥看板 v10.1 (全景大师终极版)</title>
+  <title>唐山O2O个人AI工作室 · 创业全景指挥看板 v10.2 (全景大师终极版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif; }
     .tab-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
     .subtab-active { background-color: #1e293b; color: #fff; }
   </style>
@@ -25,7 +24,7 @@
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <h1 id="headerBrandName" class="text-base sm:text-lg font-bold tracking-tight">糖玩 AI 实验室 (TangPlay AI Lab)</h1>
-            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] px-2.5 py-0.5 rounded-full font-bold">👑 v10.1 全景大师终极版</span>
+            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] px-2.5 py-0.5 rounded-full font-bold">👑 v10.2 全景大师终极版</span>
           </div>
           <p class="text-xs text-slate-400 mt-0.5 hidden sm:block">前全职软件工程师 × 国际学校雅思教师 | 路北沙龙引流 + 路南深度交付 + B端企业赋能闭环</p>
         </div>
@@ -50,7 +49,7 @@
 
         <div class="flex items-center space-x-2">
           <a href="courses.html" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-sm flex items-center">
-            <i class="fa-solid fa-book-open-reader mr-1.5"></i>课程门户 (20讲)
+            <i class="fa-solid fa-book-open-reader mr-1.5"></i>课程门户 (<span id="topCourseCount">24</span>讲)
           </a>
           <button onclick="openSyncModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-sm flex items-center">
             <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>跨端同步
@@ -96,7 +95,7 @@
         <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 px-2">创业全景 10 大满贯模块</h2>
         <nav class="space-y-1">
           <a href="courses.html" class="w-full text-left px-3 py-2.5 mb-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition flex items-center justify-between">
-            <span class="flex items-center"><i class="fa-solid fa-chalkboard w-5 mr-1.5"></i>进入20讲课堂教研门户</span>
+            <span class="flex items-center"><i class="fa-solid fa-chalkboard w-5 mr-1.5"></i>进入<span id="sideCourseCount">24</span>讲课堂教研门户</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </a>
           <button onclick="switchTab('mod1')" id="btn-mod1" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
@@ -137,7 +136,7 @@
           </button>
           <button onclick="switchTab('mod10')" id="btn-mod10" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between tab-active">
             <span class="flex items-center"><i class="fa-solid fa-building-shield w-5 mr-1.5"></i>10. B端私享会与企业合同库</span>
-            <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">v10.1 终章</span>
+            <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">v10.2 终章</span>
           </button>
         </nav>
       </div>
@@ -1123,6 +1122,17 @@
       }
     }
 
+    // 动态同步来自 courses.html 的最新课程总数（默认 24 讲）
+    function syncCourseCountBadge() {
+      const syncedCount = localStorage.getItem('tangplay_total_lessons_count');
+      if (syncedCount && parseInt(syncedCount, 10) > 0) {
+        const t = document.getElementById('topCourseCount');
+        const s = document.getElementById('sideCourseCount');
+        if (t) t.innerText = syncedCount;
+        if (s) s.innerText = syncedCount;
+      }
+    }
+
     renderUI();
     switchScript(0);
     switchCourse(2);
@@ -1133,6 +1143,7 @@
     switchDual(0);
     switchB2B(0);
     calcRevenue();
+    syncCourseCountBadge();
   </script>
 </body>
 </html>

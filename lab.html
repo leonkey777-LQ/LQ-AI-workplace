@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>糖玩 AI 实验室 · 互动演示大厅 (Demo Lab v1.0)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif; }
+    .card-glow { transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease; }
+    .card-glow:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.16); }
+    .filter-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: #fff; border-color: transparent; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- 顶栏 -->
+  <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-indigo-500 to-blue-600 flex items-center justify-center text-lg font-bold shadow-lg shrink-0">
+          <i class="fa-solid fa-flask"></i>
+        </div>
+        <div>
+          <div class="flex items-center flex-wrap gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">糖玩 AI 实验室 · 互动演示大厅</h1>
+            <span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">Lab v1.0</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block mt-0.5">零后端单文件微应用军火库｜支持真机竖屏预览 · 微信扫码即玩 · 一键试水测试</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="courses.html" class="text-xs bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/30 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-book-open-reader mr-1.5"></i>课堂中控台
+        </a>
+        <a href="index.html" class="text-xs bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+          <i class="fa-solid fa-gauge-high mr-1.5"></i>老板看板
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体 -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- 状态总览 + 搜索筛选栏 -->
+    <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <h2 class="text-lg sm:text-xl font-extrabold text-white">蓄水期互动工具矩阵 & 线下演示军火库</h2>
+          <p class="text-xs sm:text-sm text-slate-400">每个已上线工具均为独立 HTML 网址，可直接分享至微信/小红书低调测试市场反馈，绝不暴露后台看板。</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="bg-slate-950/80 border border-emerald-500/30 rounded-2xl px-4 py-2.5 text-center min-w-[92px]">
+            <div class="text-[11px] text-slate-400">已上线可玩</div>
+            <div id="readyCount" class="text-2xl font-black text-emerald-400">0</div>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-700 rounded-2xl px-4 py-2.5 text-center min-w-[92px]">
+            <div class="text-[11px] text-slate-400">规划排期中</div>
+            <div id="plannedCount" class="text-2xl font-black text-amber-400">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
+        <div id="categoryFilters" class="flex flex-wrap gap-2"></div>
+        <div class="relative w-full sm:w-64">
+          <i class="fa-solid fa-magnifying-glass text-slate-500 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="demoSearch" type="text" oninput="renderDemos()" placeholder="搜索工具名 / 标签 / 课程..." class="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none">
+        </div>
+      </div>
+    </section>
+
+    <!-- 工具卡片网格 -->
+    <section id="demosGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div class="col-span-full text-center text-slate-500 text-sm py-12">正在载入互动演示注册表...</div>
+    </section>
+
+  </main>
+
+  <!-- 模拟 iPhone 手机竖屏预览弹窗 -->
+  <div id="mobilePreviewModal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick="if(event.target===this) closeMobilePreview()">
+    <div class="flex flex-col items-center gap-3 max-h-[95vh]">
+      <div class="w-[375px] max-w-[92vw] flex items-center justify-between text-xs text-slate-300 px-1">
+        <span class="font-bold flex items-center"><i class="fa-solid fa-mobile-screen-button text-emerald-400 mr-1.5"></i><span id="previewTitle">微信竖屏模拟预览 (375px)</span></span>
+        <div class="flex items-center gap-2">
+          <a id="previewOpenFull" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded-lg font-bold transition">新窗口打开</a>
+          <button onclick="closeMobilePreview()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg transition"><i class="fa-solid fa-xmark"></i> 关闭</button>
+        </div>
+      </div>
+      <!-- 拟真手机边框 -->
+      <div class="w-[375px] max-w-[92vw] h-[720px] max-h-[82vh] bg-slate-900 rounded-[2.2rem] p-2.5 border-4 border-slate-700 shadow-2xl flex flex-col">
+        <div class="w-24 h-1.5 bg-slate-700 rounded-full mx-auto mb-2 shrink-0"></div>
+        <iframe id="mobilePreviewFrame" src="about:blank" class="w-full flex-1 rounded-[1.5rem] bg-slate-950 border border-slate-800"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 微信分享二维码弹窗 -->
+  <div id="qrModal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick="if(event.target===this) closeQrModal()">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full">独立试水直达码</span>
+          <h3 id="qrModalTitle" class="text-base font-bold text-white mt-1">扫码在手机体验</h3>
+        </div>
+        <button onclick="closeQrModal()" class="text-slate-400 hover:text-white text-lg px-2"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="bg-white p-4 rounded-2xl flex items-center justify-center mx-auto w-fit">
+        <div id="qrCanvas"></div>
+      </div>
+      <div id="qrLocalTip" class="hidden text-[11px] text-amber-300 bg-amber-950/50 border border-amber-500/30 rounded-xl p-2.5">
+        当前为本地打开模式；推送到 GitHub 后访问 Cloudflare 线上地址，即可直接供微信扫码！
+      </div>
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2">
+        <input id="qrUrlInput" type="text" readonly class="bg-transparent text-[11px] font-mono text-slate-300 w-full focus:outline-none">
+        <button onclick="copyQrLink()" class="shrink-0 text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg font-bold transition">复制网址</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-2xl"></div>
+
+  <script>
+    window.DEMO_REGISTRY = [];
+    let activeCategory = 'ALL';
+
+    const ACCENT_STYLES = {
+      emerald: { iconBg: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', border: 'hover:border-emerald-500/50' },
+      amber:   { iconBg: 'bg-amber-500/15 text-amber-400 border-amber-500/30',       border: 'hover:border-amber-500/50' },
+      blue:    { iconBg: 'bg-blue-500/15 text-blue-400 border-blue-500/30',          border: 'hover:border-blue-500/50' },
+      indigo:  { iconBg: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',    border: 'hover:border-indigo-500/50' },
+      cyan:    { iconBg: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',          border: 'hover:border-cyan-500/50' },
+      purple:  { iconBg: 'bg-purple-500/15 text-purple-400 border-purple-500/30',    border: 'hover:border-purple-500/50' },
+      rose:    { iconBg: 'bg-rose-500/15 text-rose-400 border-rose-500/30',          border: 'hover:border-rose-500/50' }
+    };
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.innerText = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), 2000);
+    }
+
+    function resolvePath(rel) {
+      if (window.location.protocol === 'file:') return rel;
+      let baseDir = window.location.pathname.replace(/\/lab\.html$/i, '/').replace(/\/lab\/?$/i, '/');
+      if (!baseDir.endsWith('/')) baseDir += '/';
+      return baseDir + rel.replace(/^\/+/, '');
+    }
+
+    function resolveFullUrl(rel) {
+      if (window.location.protocol === 'file:') {
+        return window.location.href.replace(/[^/]*$/, '') + rel;
+      }
+      return window.location.origin + resolvePath(rel);
+    }
+
+    function loadScript(url, timeoutMs = 5000) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        let done = false;
+        const t = setTimeout(() => { if (!done) { done = true; s.remove(); reject(new Error('timeout')); } }, timeoutMs);
+        s.src = url;
+        s.async = true;
+        s.onload = () => { if (!done) { done = true; clearTimeout(t); resolve(); } };
+        s.onerror = () => { if (!done) { done = true; clearTimeout(t); reject(new Error('error')); } };
+        document.head.appendChild(s);
+      });
+    }
+
+    async function bootLab() {
+      try {
+        if (window.location.protocol === 'file:') {
+          await loadScript('data/demos_registry.js');
+        } else {
+          const res = await fetch(resolvePath('data/demos_registry.js') + '?v=' + Date.now(), { cache: 'no-cache' });
+          if (res.ok) {
+            const code = await res.text();
+            if (!code.trim().startsWith('<')) (new Function(code))();
+          }
+        }
+      } catch (e) {}
+
+      renderFilters();
+      renderDemos();
+
+      // 后台异步加载二维码库
+      const qrCdns = [
+        'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+      ];
+      for (const u of qrCdns) {
+        if (window.QRCode) break;
+        try { await loadScript(u, 4000); } catch (e) {}
+      }
+    }
+
+    function renderFilters() {
+      const list = window.DEMO_REGISTRY || [];
+      const ready = list.filter(d => d.status === 'ready').length;
+      const planned = list.length - ready;
+      document.getElementById('readyCount').innerText = ready;
+      document.getElementById('plannedCount').innerText = planned;
+
+      const cats = ['ALL', ...Array.from(new Set(list.map(d => d.category)))];
+      const box = document.getElementById('categoryFilters');
+      box.innerHTML = cats.map(c => {
+        const label = c === 'ALL' ? `全部工具 (${list.length})` : c;
+        const active = c === activeCategory;
+        return `<button onclick="setCategory('${escapeHtml(c)}')" class="text-xs px-3 py-1.5 rounded-xl font-bold border transition ${active ? 'filter-active' : 'bg-slate-950 border-slate-700 text-slate-300 hover:border-blue-500'}">${escapeHtml(label)}</button>`;
+      }).join('');
+    }
+
+    function setCategory(cat) {
+      activeCategory = cat;
+      renderFilters();
+      renderDemos();
+    }
+
+    function renderDemos() {
+      const list = window.DEMO_REGISTRY || [];
+      const q = (document.getElementById('demoSearch').value || '').trim().toLowerCase();
+      const grid = document.getElementById('demosGrid');
+
+      const filtered = list.filter(d => {
+        const catOk = activeCategory === 'ALL' || d.category === activeCategory;
+        const qOk = !q || [d.title, d.subtitle, d.desc, d.category, d.lessonRef, ...(d.tags || [])].join(' ').toLowerCase().includes(q);
+        return catOk && qOk;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center text-slate-400 text-sm">没有找到匹配的互动小工具</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(d => {
+        const isReady = d.status === 'ready';
+        const st = ACCENT_STYLES[d.accent] || ACCENT_STYLES.blue;
+        const tagsHtml = (d.tags || []).map(t => `<span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md">${escapeHtml(t)}</span>`).join('');
+        const targetUrl = resolvePath(d.url);
+
+        const actionsHtml = isReady ? `
+          <div class="grid grid-cols-3 gap-2 pt-2">
+            <a href="${escapeHtml(targetUrl)}" target="_blank" class="col-span-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center">
+              <i class="fa-solid fa-play mr-1"></i>打开
+            </a>
+            <button onclick="openMobilePreview('${escapeHtml(d.id)}')" class="col-span-1 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-xs font-bold py-2 rounded-xl transition flex items-center justify-center">
+              <i class="fa-solid fa-mobile-screen mr-1"></i>竖屏测
+            </button>
+            <button onclick="openQr('${escapeHtml(d.id)}')" class="col-span-1 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-xs font-bold py-2 rounded-xl transition flex items-center justify-center">
+              <i class="fa-solid fa-qrcode mr-1"></i>扫码
+            </button>
+          </div>
+        ` : `
+          <div class="pt-2 flex items-center justify-between text-[11px] text-slate-500 bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2">
+            <span><i class="fa-solid fa-hammer mr-1.5 text-amber-500/80"></i>蓄水期【轨道B】待造物排期</span>
+            <span class="font-mono text-slate-400">${escapeHtml(d.url)}</span>
+          </div>
+        `;
+
+        return `
+          <article class="card-glow bg-slate-900 border border-slate-800 ${st.border} rounded-2xl p-5 flex flex-col justify-between space-y-4 ${isReady ? '' : 'opacity-75'}">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="w-11 h-11 rounded-xl border ${st.iconBg} flex items-center justify-center text-lg shrink-0">
+                  <i class="${escapeHtml(d.icon || 'fa-solid fa-cube')}"></i>
+                </div>
+                <div class="flex flex-wrap items-center justify-end gap-1.5">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isReady ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}">
+                    ${isReady ? '● 已上线可玩' : '○ 规划中'}
+                  </span>
+                  <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">${escapeHtml(d.category)}</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="font-extrabold text-base text-white leading-snug">${escapeHtml(d.title)}</h3>
+                <p class="text-xs text-blue-300/90 font-medium mt-1">${escapeHtml(d.subtitle)}</p>
+              </div>
+
+              <p class="text-xs text-slate-400 leading-relaxed">${escapeHtml(d.desc)}</p>
+
+              <div class="flex flex-wrap items-center gap-1.5">
+                ${tagsHtml}
+                <span class="text-[10px] text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md">关联课：${escapeHtml(d.lessonRef)}</span>
+              </div>
+            </div>
+
+            ${actionsHtml}
+          </article>
+        `;
+      }).join('');
+    }
+
+    function openMobilePreview(id) {
+      const item = (window.DEMO_REGISTRY || []).find(d => d.id === id);
+      if (!item) return;
+      const url = resolvePath(item.url);
+      document.getElementById('previewTitle').innerText = item.title;
+      document.getElementById('previewOpenFull').href = url;
+      document.getElementById('mobilePreviewFrame').src = url;
+      document.getElementById('mobilePreviewModal').classList.remove('hidden');
+    }
+
+    function closeMobilePreview() {
+      document.getElementById('mobilePreviewFrame').src = 'about:blank';
+      document.getElementById('mobilePreviewModal').classList.add('hidden');
+    }
+
+    function openQr(id) {
+      const item = (window.DEMO_REGISTRY || []).find(d => d.id === id);
+      if (!item) return;
+      const fullUrl = resolveFullUrl(item.url);
+      document.getElementById('qrModalTitle').innerText = item.title;
+      document.getElementById('qrUrlInput').value = fullUrl;
+      document.getElementById('qrLocalTip').classList.toggle('hidden', window.location.protocol !== 'file:');
+
+      const box = document.getElementById('qrCanvas');
+      box.innerHTML = '';
+      if (window.QRCode) {
+        new QRCode(box, { text: fullUrl, width: 200, height: 200, colorDark: '#0f172a', colorLight: '#ffffff' });
+      } else {
+        box.innerHTML = '<div class="text-xs text-slate-600 p-4">二维码组件载入中，请直接复制下方链接。</div>';
+      }
+      document.getElementById('qrModal').classList.remove('hidden');
+    }
+
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.add('hidden');
+    }
+
+    function copyQrLink() {
+      const val = document.getElementById('qrUrlInput').value;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(val).then(() => showToast('已复制独立工具网址！'));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = val;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('已复制独立工具网址！');
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootLab);
+    } else {
+      bootLab();
+    }
+  </script>
+</body>
+</html>

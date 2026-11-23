@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>唐山周末吃啥 / 去哪玩赛博抽签器｜糖玩 AI 实验室</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .neon-card {
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.86); }
+      60% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .win-pop { animation: popIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center px-4 py-6 relative overflow-x-hidden">
+
+  <!-- 零依赖纯 Canvas 礼花层 -->
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <div class="max-w-md w-full space-y-4 relative z-10">
+
+    <!-- 主抽签卡片 -->
+    <div class="neon-card bg-slate-900/95 border border-amber-500/35 rounded-3xl p-5 sm:p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full">唐山同城防纠结神器</span>
+          <h1 class="text-xl font-black text-white mt-1.5">今天到底选哪家？</h1>
+        </div>
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 text-slate-950 flex items-center justify-center text-xl shadow-lg">
+          <i class="fa-solid fa-dice"></i>
+        </div>
+      </div>
+
+      <!-- 双模式切换 -->
+      <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+        <button id="modeFoodBtn" onclick="switchMode('food')" class="py-2 rounded-xl text-xs font-bold transition bg-amber-500 text-slate-950 shadow">
+          🍜 周末吃啥
+        </button>
+        <button id="modePlayBtn" onclick="switchMode('play')" class="py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white">
+          🎡 去哪儿玩
+        </button>
+      </div>
+
+      <!-- 老虎机滚动显示窗口 -->
+      <div class="bg-slate-950 border-2 border-amber-500/40 rounded-2xl p-6 text-center min-h-[126px] flex flex-col items-center justify-center relative overflow-hidden">
+        <div id="slotHint" class="text-[11px] text-slate-500 mb-1">点击下方大按钮，交给命运决定！</div>
+        <div id="slotDisplay" class="text-2xl sm:text-3xl font-black tracking-wide bg-gradient-to-r from-amber-300 via-yellow-200 to-orange-400 bg-clip-text text-transparent">
+          准备就绪
+        </div>
+        <button id="copyResultBtn" onclick="copyWinResult()" class="hidden mt-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 px-3 py-1 rounded-full font-bold transition">
+          <i class="fa-regular fa-copy mr-1"></i>复制结果甩群里
+        </button>
+      </div>
+
+      <!-- 主按钮 -->
+      <button id="spinBtn" onclick="startSpin()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:brightness-110 active:scale-[0.98] text-slate-950 text-sm sm:text-base font-black tracking-wide transition shadow-xl">
+        <i class="fa-solid fa-bolt mr-1.5"></i>帮我决定！立即摇签
+      </button>
+
+      <!-- 现场观众临时加店输入框 -->
+      <div class="pt-2 border-t border-slate-800 space-y-2.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-300">候选池 (<span id="poolCount">0</span> 个选项)</span>
+          <button onclick="resetCurrentPool()" class="text-[11px] text-slate-500 hover:text-amber-300 underline">恢复唐山默认池</button>
+        </div>
+
+        <form onsubmit="addCustomItem(event)" class="flex gap-2">
+          <input id="customInput" type="text" maxlength="20" placeholder="输入你想加的唐山店名或地点..." class="flex-1 bg-slate-950 border border-slate-700 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none">
+          <button type="submit" class="shrink-0 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-amber-300 border border-amber-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+            + 添加
+          </button>
+        </form>
+
+        <div id="poolChips" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pt-1"></div>
+      </div>
+
+      <!-- 最近 5 次摇签记录 -->
+      <div id="historyBox" class="hidden pt-2 border-t border-slate-800/80 space-y-1.5">
+        <div class="text-[11px] text-slate-500 font-bold">最近手气记录：</div>
+        <div id="historyList" class="flex flex-wrap gap-1.5"></div>
+      </div>
+    </div>
+
+    <footer class="text-center text-[11px] text-slate-500">
+      Powered by <span class="text-amber-400/90 font-bold">唐山 · 糖玩 AI 实验室</span>｜零代码 3 分钟现场生成
+    </footer>
+  </div>
+
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xl"></div>
+
+  <script>
+    const DEFAULT_POOLS = {
+      food: [
+        "棋子烧饼配羊汤", "路北网红铁锅炖", "南湖烧烤局", "唐山宴地道小吃",
+        "海鲜大咖硬菜", "老式铜锅涮肉", "爱琴海精品日料", "远洋城川味火锅",
+        "咯扎/蜂蜜麻糖家常菜", "在家躺平点外卖"
+      ],
+      play: [
+        "南湖公园环湖散步", "河头老街夜游", "唐山宴沉浸打卡", "启新1889文创园",
+        "培仁历史文化街", "路北极客咖啡充电局", "万达/爱琴海看IMAX", "在家开黑打经典游戏"
+      ]
+    };
+
+    const STORAGE_KEY = 'tangplay_lucky_v1';
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {
+      mode: 'food',
+      pools: { food: [...DEFAULT_POOLS.food], play: [...DEFAULT_POOLS.play] },
+      history: []
+    };
+
+    let spinning = false;
+    let lastWinner = '';
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.innerText = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), 1800);
+    }
+
+    function switchMode(mode) {
+      if (spinning) return;
+      state.mode = mode;
+      save();
+      renderAll();
+    }
+
+    function renderAll() {
+      const isFood = state.mode === 'food';
+      document.getElementById('modeFoodBtn').className = isFood
+        ? 'py-2 rounded-xl text-xs font-bold transition bg-amber-500 text-slate-950 shadow'
+        : 'py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+      document.getElementById('modePlayBtn').className = !isFood
+        ? 'py-2 rounded-xl text-xs font-bold transition bg-amber-500 text-slate-950 shadow'
+        : 'py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white';
+
+      const list = state.pools[state.mode] || [];
+      document.getElementById('poolCount').innerText = list.length;
+
+      const chips = document.getElementById('poolChips');
+      chips.innerHTML = list.map((item, idx) => `
+        <span class="inline-flex items-center gap-1.5 text-[11px] bg-slate-950 border border-slate-800 text-slate-300 px-2.5 py-1 rounded-lg">
+          <span>${item.replace(/</g, '&lt;')}</span>
+          <button onclick="removeItem(${idx})" class="text-slate-500 hover:text-rose-400" title="删除">×</button>
+        </span>
+      `).join('');
+
+      const hBox = document.getElementById('historyBox');
+      const hList = document.getElementById('historyList');
+      if (state.history.length > 0) {
+        hBox.classList.remove('hidden');
+        hList.innerHTML = state.history.map(h => `<span class="text-[10px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded-md">${h.replace(/</g, '&lt;')}</span>`).join('');
+      } else {
+        hBox.classList.add('hidden');
+      }
+    }
+
+    function addCustomItem(e) {
+      e.preventDefault();
+      const input = document.getElementById('customInput');
+      const val = input.value.trim();
+      if (!val) return;
+      if (state.pools[state.mode].includes(val)) {
+        showToast('这个选项已经在池子里啦！');
+        return;
+      }
+      state.pools[state.mode].unshift(val);
+      input.value = '';
+      save();
+      renderAll();
+      showToast(`已加入候选池：${val}`);
+    }
+
+    function removeItem(idx) {
+      if (spinning) return;
+      if (state.pools[state.mode].length <= 2) {
+        showToast('至少保留 2 个选项才能抽签哦！');
+        return;
+      }
+      state.pools[state.mode].splice(idx, 1);
+      save();
+      renderAll();
+    }
+
+    function resetCurrentPool() {
+      if (spinning) return;
+      state.pools[state.mode] = [...DEFAULT_POOLS[state.mode]];
+      save();
+      renderAll();
+      showToast('已恢复唐山默认候选池');
+    }
+
+    function startSpin() {
+      if (spinning) return;
+      const list = state.pools[state.mode];
+      if (!list || list.length === 0) return;
+
+      spinning = true;
+      const btn = document.getElementById('spinBtn');
+      const display = document.getElementById('slotDisplay');
+      const hint = document.getElementById('slotHint');
+      const copyBtn = document.getElementById('copyResultBtn');
+
+      btn.disabled = true;
+      btn.classList.add('opacity-70');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>命运高速旋转中...';
+      hint.innerText = '别眨眼，马上揭晓！';
+      copyBtn.classList.add('hidden');
+      display.classList.remove('win-pop');
+
+      // 物理加减速节奏：共跳动 26 次，间隔从 40ms 平滑放慢到 260ms
+      const totalTicks = 26;
+      let tick = 0;
+      const finalIdx = Math.floor(Math.random() * list.length);
+
+      function nextTick() {
+        tick++;
+        const pick = (tick === totalTicks) ? list[finalIdx] : list[Math.floor(Math.random() * list.length)];
+        display.innerText = pick;
+
+        if (tick < totalTicks) {
+          const progress = tick / totalTicks;
+          const delay = Math.round(40 + Math.pow(progress, 2.4) * 230);
+          setTimeout(nextTick, delay);
+        } else {
+          spinning = false;
+          lastWinner = pick;
+          display.classList.add('win-pop');
+          hint.innerText = state.mode === 'food' ? '🎉 就吃这个！谁反悔谁买单' : '🎉 就去这儿！马上出发';
+          copyBtn.classList.remove('hidden');
+          btn.disabled = false;
+          btn.classList.remove('opacity-70');
+          btn.innerHTML = '<i class="fa-solid fa-bolt mr-1.5"></i>不服气？再摇一次';
+
+          state.history.unshift(pick);
+          state.history = state.history.slice(0, 5);
+          save();
+          renderAll();
+          fireConfetti();
+        }
+      }
+      nextTick();
+    }
+
+    function copyWinResult() {
+      if (!lastWinner) return;
+      const verb = state.mode === 'food' ? '吃' : '去';
+      const txt = `🎲 唐山周末抽签器已一锤定音：今天${verb}【${lastWinner}】！谁反悔谁请客！`;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(txt).then(() => showToast('已复制结果，快甩进群里！'));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('已复制结果！');
+      }
+    }
+
+    // 零外部依赖纯 Canvas 礼花特效
+    function fireConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa', '#fb923c'];
+      const particles = Array.from({ length: 75 }, () => {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 8;
+        return {
+          x: canvas.width / 2,
+          y: canvas.height * 0.42,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4,
+          size: 4 + Math.random() * 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rot: Math.random() * 360,
+          vrot: (Math.random() - 0.5) * 14,
+          life: 1
+        };
+      });
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.22;
+          p.rot += p.vrot;
+          p.life -= 0.016;
+          if (p.life > 0) {
+            alive = true;
+            ctx.save();
+            ctx.globalAlpha = p.life;
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+            ctx.restore();
+          }
+        });
+        if (alive) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>

@@ -3,37 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>糖玩 AI 实验室 · 深度教研与课堂中控台 v3.0</title>
+  <title>糖玩 AI 实验室 · 深度教研与课堂中控台 v3.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <!-- Mermaid v11 动态矢量架构图引擎 -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <!-- 随堂扫码二维码生成库 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif; }
     .lesson-active { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); }
     .projector-mode { font-size: 118% !important; }
     .projector-mode pre { font-size: 0.95rem !important; line-height: 1.75 !important; }
 
-    /* Mermaid SVG 响应式居中 */
     .mermaid-box svg { max-width: 100% !important; height: auto !important; margin: 0 auto; }
 
-    /* 自定义暗黑滚动条 */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-    /* 计时器结束脉冲提醒 */
     @keyframes timerPulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.65); }
       50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
     }
     .timer-done { animation: timerPulse 1.4s infinite; border-color: #f59e0b !important; }
 
-    /* 打印 / 导出 PDF 讲义专用白底省墨样式 */
     @media print {
       body { background: #ffffff !important; color: #0f172a !important; font-size: 12pt !important; }
       header, aside, .no-print { display: none !important; }
@@ -57,7 +48,7 @@
         <div>
           <div class="flex items-center flex-wrap gap-2">
             <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">糖玩 AI 实验室 · 课堂中控台</h1>
-            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v3.0</span>
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] px-2 py-0.5 rounded-full font-bold">v3.1</span>
             <span id="totalLessonsBadge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-semibold">载入中...</span>
             <span id="taughtProgressBadge" class="hidden sm:inline-block bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">已备课 0/0</span>
           </div>
@@ -71,19 +62,19 @@
           <option value="ALL">📚 全部课程模块</option>
         </select>
 
-        <button onclick="openQrModal()" id="qrNavBtn" title="生成本讲学员纯净版二维码，扫码直接看步骤与一键复制 Prompt" class="text-xs bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 px-3 py-2 rounded-xl font-bold transition flex items-center">
+        <button onclick="openQrModal()" id="qrNavBtn" title="生成本讲学员纯净版二维码" class="text-xs bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 px-3 py-2 rounded-xl font-bold transition flex items-center">
           <i class="fa-solid fa-qrcode mr-1.5"></i>随堂扫码
         </button>
 
-        <button onclick="toggleStudentMode()" id="studentModeBtn" title="开启后自动隐藏讲师逐字稿与助教排障内参，防止投屏剧透" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+        <button onclick="toggleStudentMode()" id="studentModeBtn" title="开启后自动隐藏讲师逐字稿与助教排障内参" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
           <i class="fa-solid fa-eye-slash mr-1.5"></i>学员纯净版
         </button>
 
-        <button onclick="toggleProjector()" id="projBtn" title="放大全屏字号，适配教室100寸投影幕布" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
+        <button onclick="toggleProjector()" id="projBtn" title="放大全屏字号" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-3 py-2 rounded-xl font-medium transition flex items-center">
           <i class="fa-solid fa-tv mr-1.5"></i>大屏字号
         </button>
 
-        <button onclick="window.print()" title="打印当前课程或另存为PDF纸质讲义" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition hidden xl:flex items-center">
+        <button onclick="window.print()" title="导出PDF纸质讲义" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition hidden xl:flex items-center">
           <i class="fa-solid fa-print mr-1.5"></i>导出PDF
         </button>
 
@@ -105,7 +96,7 @@
     <button id="exitStudentBannerBtn" onclick="toggleStudentMode()" class="ml-3 underline text-white hover:text-emerald-300 font-bold">退出纯净模式</button>
   </div>
 
-  <!-- 模块加载故障隔离预警条（仅某个 data/*.js 报错时显示） -->
+  <!-- 模块加载故障隔离预警条 -->
   <div id="loadWarningBanner" class="hidden bg-amber-950/80 border-b border-amber-500/40 text-amber-200 text-xs py-2 px-4 text-center no-print">
     <i class="fa-solid fa-triangle-exclamation mr-1.5 text-amber-400"></i>
     <span id="loadWarningText"></span>
@@ -122,7 +113,6 @@
           <span id="dataSourceBadge" class="text-[10px] text-blue-400 font-mono bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md truncate">检测数据源...</span>
         </div>
 
-        <!-- 实时关键词搜索框 -->
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass text-slate-500 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
           <input id="searchInput" type="text" oninput="renderSidebar()" placeholder="搜索课名 / Prompt / 卡点..." class="w-full bg-slate-950 border border-slate-700/80 focus:border-blue-500 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none">
@@ -132,17 +122,15 @@
         </div>
 
         <div id="lessonList" class="space-y-1.5 max-h-[62vh] overflow-y-auto pr-1">
-          <div class="text-xs text-slate-500 p-6 text-center">
-            <i class="fa-solid fa-spinner fa-spin mr-1.5"></i>正在载入教研模块...
-          </div>
+          <div class="text-xs text-slate-500 p-6 text-center">正在载入教研模块...</div>
         </div>
       </div>
 
       <div id="teacherTipsCard" class="bg-gradient-to-br from-indigo-950/80 to-slate-900 rounded-2xl p-4 border border-indigo-800/40 text-xs space-y-2">
-        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>v3.0 课堂中控台秘籍</div>
+        <div class="font-bold text-indigo-300 flex items-center"><i class="fa-solid fa-bolt mr-1.5 text-amber-400"></i>v3.1 课堂中控台秘籍</div>
         <ul class="text-slate-400 leading-relaxed space-y-1.5 list-disc pl-4">
-          <li>点击每个实操步骤右侧的 <b class="text-blue-300">⏱️ 计时</b> 可启动悬浮倒计时，精准把控 120 分钟节奏。</li>
-          <li>在 Prompt 上方的 <b class="text-emerald-300">⚡ 变量填空器</b> 输入现场学员店名，下方源码实时替换并支持一键复制。</li>
+          <li>点击每个实操步骤右侧的 <b class="text-blue-300">计时</b> 可启动悬浮倒计时，精准把控 120 分钟节奏。</li>
+          <li>在 Prompt 上方的 <b class="text-emerald-300">变量填空器</b> 输入现场学员店名，下方源码实时替换并一键复制。</li>
           <li>点击顶栏 <b class="text-blue-300">随堂扫码</b> 生成专属二维码，学员扫码直达纯净版伴学页。</li>
         </ul>
       </div>
@@ -151,8 +139,7 @@
     <!-- 右侧：单节课程深度讲义与课堂投屏工作台 -->
     <main class="lg:col-span-9 space-y-6" id="lessonContentArea">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400 text-sm">
-        <i class="fa-solid fa-circle-notch fa-spin text-2xl text-blue-500 mb-3 block"></i>
-        正在初始化模块化教研引擎...
+        正在载入课程数据库...
       </div>
     </main>
 
@@ -178,7 +165,7 @@
       </div>
 
       <div id="qrFileWarn" class="hidden text-[11px] text-amber-300 bg-amber-950/50 border border-amber-500/30 rounded-xl p-2.5 leading-relaxed">
-        <i class="fa-solid fa-circle-info mr-1"></i>检测到当前为本地 <code class="text-white">file://</code> 打开，手机无法访问电脑本地路径；推送到 GitHub / Cloudflare 线上网址后即可直接供全班扫码！
+        检测到当前为本地 <code class="text-white">file://</code> 打开，推送到 Cloudflare 线上网址后即可直接供全班扫码！
       </div>
 
       <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
@@ -188,7 +175,7 @@
     </div>
   </div>
 
-  <!-- 悬浮课堂分步倒计时器（右下角） -->
+  <!-- 悬浮课堂分步倒计时器 -->
   <div id="floatingTimer" class="hidden fixed bottom-5 right-5 z-50 w-72 bg-slate-900/95 backdrop-blur border-2 border-blue-500/50 rounded-2xl p-4 shadow-2xl space-y-3 no-print">
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
@@ -230,7 +217,7 @@
 
   <script>
     // =========================================================================
-    // 1. 全局状态与默认架构图兜底库（即使旧版数据未写 diagram 字段也能立刻演示）
+    // 1. 全局状态与默认架构图兜底库
     // =========================================================================
     window.COURSE_MODULES = [];
     window.COURSE_MANIFEST = null;
@@ -305,29 +292,16 @@
     let isStudentMode = false;
     let isStudentLocked = false;
     let toastTimer = null;
+    let mermaidReady = false;
 
-    // Prompt 变量填空状态
     let promptVarState = {};
     let renderedPromptTexts = {};
-
-    // 备课进度持久化（向下兼容 v2.0 键名）
     let taughtSet = new Set(JSON.parse(localStorage.getItem('tangplay_taught_lessons_v2') || '[]'));
 
-    // 悬浮倒计时器状态
     let timerTotalSec = 1800;
     let timerRemainSec = 1800;
     let timerInterval = null;
     let timerRunning = false;
-
-    // 初始化 Mermaid（如果 CDN 加载成功）
-    if (window.mermaid) {
-      window.mermaid.initialize({
-        startOnLoad: false,
-        theme: 'dark',
-        securityLevel: 'loose',
-        fontFamily: 'Inter, PingFang SC, Microsoft YaHei, sans-serif'
-      });
-    }
 
     function saveTaughtState() {
       localStorage.setItem('tangplay_taught_lessons_v2', JSON.stringify(Array.from(taughtSet)));
@@ -336,11 +310,11 @@
     function escapeHtml(str) {
       if (str === null || str === undefined) return '';
       return String(str)
-        .replace(/&/g, '&')
-        .replace(/</g, '<')
-        .replace(/>/g, '>')
-        .replace(/"/g, '"')
-        .replace(/'/g, ''');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     function showToast(message) {
@@ -389,73 +363,183 @@
     }
 
     // =========================================================================
-    // 2. 动态模块化加载引擎（优先 data/manifest.js，自动兼容旧 course_data.js）
+    // 2. 防卡死模块化加载引擎（适配 Cloudflare /courses、/courses/ 与 file://）
     // =========================================================================
-    function loadScriptFile(src) {
+    function resolveAssetPath(relPath) {
+      if (window.location.protocol === 'file:') return relPath;
+      let baseDir = window.location.pathname
+        .replace(/\/courses\.html$/i, '/')
+        .replace(/\/courses\/?$/i, '/');
+      if (!baseDir.endsWith('/')) baseDir += '/';
+      return baseDir + relPath.replace(/^\/+/, '');
+    }
+
+    function loadScriptByTag(url, timeoutMs = 6000) {
       return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = src + '?v=' + Date.now();
-        script.async = false;
-        script.onload = () => resolve(src);
-        script.onerror = () => reject(new Error('无法加载脚本: ' + src));
+        let settled = false;
+        const timer = setTimeout(() => {
+          if (!settled) {
+            settled = true;
+            script.remove();
+            reject(new Error('加载超时: ' + url));
+          }
+        }, timeoutMs);
+
+        script.src = url;
+        script.async = true;
+        script.onload = () => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timer);
+            resolve(url);
+          }
+        };
+        script.onerror = () => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timer);
+            reject(new Error('无法加载: ' + url));
+          }
+        };
         document.head.appendChild(script);
       });
     }
 
+    async function loadDataScriptSafe(relPath) {
+      const resolved = resolveAssetPath(relPath);
+      const bustUrl = resolved + '?v=' + Date.now();
+
+      if (window.location.protocol === 'file:') {
+        await loadScriptByTag(resolved, 6000);
+        return;
+      }
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 6000);
+      try {
+        const res = await fetch(bustUrl, { cache: 'no-store', signal: controller.signal });
+        if (!res.ok) throw new Error(`${relPath} (HTTP ${res.status})`);
+        const code = await res.text();
+        const trimmed = code.trim();
+        if (!trimmed || trimmed.startsWith('<')) {
+          throw new Error(`${relPath} 未找到（返回了HTML页面）`);
+        }
+        try {
+          (new Function(code))();
+        } catch (syntaxErr) {
+          throw new Error(`${relPath} JS语法错误: ${syntaxErr.message}`);
+        }
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    // 后台非阻塞加载 Mermaid 与 QRCode（国内多源降级，绝不卡死主界面）
+    async function loadOptionalEnhancers() {
+      const mermaidCdns = [
+        'https://cdn.bootcdn.net/ajax/libs/mermaid/11.4.1/mermaid.min.js',
+        'https://unpkg.com/mermaid@11/dist/mermaid.min.js',
+        'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'
+      ];
+      for (const url of mermaidCdns) {
+        if (window.mermaid) break;
+        try {
+          await loadScriptByTag(url, 5000);
+          if (window.mermaid) break;
+        } catch (e) {}
+      }
+      if (window.mermaid) {
+        window.mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          securityLevel: 'loose',
+          fontFamily: '-apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, sans-serif'
+        });
+        mermaidReady = true;
+        renderActiveMermaid();
+      }
+
+      const qrCdns = [
+        'https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+      ];
+      for (const url of qrCdns) {
+        if (window.QRCode) break;
+        try {
+          await loadScriptByTag(url, 4000);
+          if (window.QRCode) break;
+        } catch (e) {}
+      }
+    }
+
     async function bootCourseDatabase() {
       const badgeEl = document.getElementById('dataSourceBadge');
-      const failedFiles = [];
+      const failedNotes = [];
 
-      // 优先尝试加载 data/manifest.js
-      let manifestLoaded = false;
       try {
-        await loadScriptFile('data/manifest.js');
-        if (window.COURSE_MANIFEST && Array.isArray(window.COURSE_MANIFEST.files)) {
-          manifestLoaded = true;
+        let manifestLoaded = false;
+        try {
+          await loadDataScriptSafe('data/manifest.js');
+          if (window.COURSE_MANIFEST && Array.isArray(window.COURSE_MANIFEST.files)) {
+            manifestLoaded = true;
+          }
+        } catch (e) {
+          manifestLoaded = false;
         }
-      } catch (e) {
-        manifestLoaded = false;
-      }
 
-      if (manifestLoaded) {
-        badgeEl.innerText = '模块化: data/';
-        for (const filePath of window.COURSE_MANIFEST.files) {
-          const beforeCount = window.COURSE_MODULES.length;
+        if (manifestLoaded) {
+          badgeEl.innerText = '模块化: data/';
+          for (const filePath of window.COURSE_MANIFEST.files) {
+            try {
+              await loadDataScriptSafe(filePath);
+            } catch (err) {
+              failedNotes.push(err.message || filePath);
+            }
+          }
+        } else {
+          badgeEl.innerText = '单文件: course_data.js';
           try {
-            await loadScriptFile(filePath);
-            // 如果文件加载了但存在运行时语法错误，window.onerror 会捕获，此处仍继续加载下一文件
+            await loadDataScriptSafe('course_data.js');
           } catch (err) {
-            failedFiles.push(filePath);
+            failedNotes.push(err.message || 'course_data.js');
           }
         }
-      } else {
-        // 平滑降级兼容模式：读取根目录旧版 course_data.js
-        badgeEl.innerText = '兼容模式: course_data.js';
-        try {
-          await loadScriptFile('course_data.js');
-        } catch (err) {
-          failedFiles.push('course_data.js');
+
+        // 去重防重复追加
+        const seenIds = new Set();
+        window.COURSE_MODULES = window.COURSE_MODULES.filter(item => {
+          if (!item || !item.id || seenIds.has(item.id)) return false;
+          seenIds.add(item.id);
+          return true;
+        });
+
+        // 同步最新总课数到本地存储，供 index.html 自动读取显示
+        if (window.COURSE_MODULES.length > 0) {
+          localStorage.setItem('tangplay_total_lessons_count', String(window.COURSE_MODULES.length));
         }
+
+        if (failedNotes.length > 0) {
+          const warnBanner = document.getElementById('loadWarningBanner');
+          document.getElementById('loadWarningText').innerText =
+            `故障隔离已生效：部分模块加载异常（${failedNotes.join('；')}），其余正常课程已完整显示。`;
+          warnBanner.classList.remove('hidden');
+        }
+
+        buildCategoryFilterOptions();
+        applyUrlParamsOnBoot();
+        renderSidebar();
+      } catch (fatalErr) {
+        document.getElementById('lessonContentArea').innerHTML = `
+          <div class="bg-rose-950/40 border border-rose-500/40 rounded-2xl p-8 text-center space-y-3">
+            <h2 class="text-lg font-bold text-white">初始化异常</h2>
+            <p class="text-xs text-rose-200 font-mono">${escapeHtml(fatalErr.message || String(fatalErr))}</p>
+          </div>
+        `;
       }
 
-      // 依据 ID 去重防重复追加
-      const seenIds = new Set();
-      window.COURSE_MODULES = window.COURSE_MODULES.filter(item => {
-        if (!item || !item.id || seenIds.has(item.id)) return false;
-        seenIds.add(item.id);
-        return true;
-      });
-
-      if (failedFiles.length > 0) {
-        const warnBanner = document.getElementById('loadWarningBanner');
-        document.getElementById('loadWarningText').innerText =
-          `故障隔离已生效：以下模块文件暂未找到或存在错误（${failedFiles.join(', ')}），其余正常课程已完整载入！`;
-        warnBanner.classList.remove('hidden');
-      }
-
-      buildCategoryFilterOptions();
-      applyUrlParamsOnBoot();
-      renderSidebar();
+      // 课程文字渲染完毕后再异步拉取 Mermaid 和 QRCode
+      loadOptionalEnhancers();
     }
 
     function buildCategoryFilterOptions() {
@@ -483,9 +567,7 @@
       const urlMode = params.get('mode');
       const urlLock = params.get('lock');
 
-      if (urlId) {
-        currentLessonId = urlId;
-      }
+      if (urlId) currentLessonId = urlId;
 
       if (urlMode === 'student') {
         isStudentMode = true;
@@ -517,9 +599,7 @@
         const raw = match[0];
         const inner = match[1].trim();
         if (skipExact.has(inner) || /^https?:\/\//i.test(inner)) continue;
-        // 仅抓取包含中文的业务变量占位符，过滤纯英文代码标签
         if (!/[\u4e00-\u9fa5]/.test(inner)) continue;
-        // 过滤非填空的中文标注（例如单字或带冒号且纯说明标题但无引导动词）
         if (!seen.has(raw)) {
           seen.add(raw);
           const shortLabel = inner.length > 26 ? inner.slice(0, 26) + '…' : inner;
@@ -577,7 +657,7 @@
     }
 
     // =========================================================================
-    // 4. 悬浮课堂分步倒计时器（含 Web Audio 到点提示音）
+    // 4. 悬浮课堂分步倒计时器
     // =========================================================================
     function parseStepMinutes(timeStr) {
       if (!timeStr) return 20;
@@ -604,7 +684,7 @@
       const box = document.getElementById('floatingTimer');
       box.classList.remove('hidden', 'timer-done');
       updateTimerDisplay();
-      toggleTimerRunning(); // 点击即直接开始倒计时
+      toggleTimerRunning();
     }
 
     function toggleTimerRunning() {
@@ -724,9 +804,8 @@
           correctLevel: QRCode.CorrectLevel.M
         });
       } else {
-        qrBox.innerHTML = '<div class="text-xs text-slate-600 p-4">离线环境下无法加载二维码库，可直接复制下方链接发送。</div>';
+        qrBox.innerHTML = '<div class="text-xs text-slate-600 p-4">二维码组件仍在后台加载，请先复制下方链接发送。</div>';
       }
-
       document.getElementById('qrModal').classList.remove('hidden');
     }
 
@@ -833,10 +912,9 @@
         listEl.innerHTML = `<div class="text-xs text-rose-400 p-4 text-center">未检测到课程数据</div>`;
         document.getElementById('lessonContentArea').innerHTML = `
           <div class="bg-rose-950/30 border border-rose-500/40 rounded-2xl p-8 text-center space-y-3">
-            <i class="fa-solid fa-triangle-exclamation text-3xl text-rose-400"></i>
             <h2 class="text-lg font-bold text-white">未成功加载课程数据库</h2>
             <p class="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
-              请确认仓库中已存在 <code class="text-amber-300">data/manifest.js</code>（模块化模式）或根目录 <code class="text-amber-300">course_data.js</code>（兼容模式），并按 F12 查看 Console 控制台是否有语法报错。
+              请确认仓库中已上传 <code class="text-amber-300">data/manifest.js</code> 与对应 <code class="text-amber-300">data/*.js</code>，或根目录保留完整 <code class="text-amber-300">course_data.js</code>。请查看页面顶部黄色预警条获取具体报错文件。
             </p>
           </div>
         `;
@@ -847,10 +925,9 @@
       currentFilteredList = filtered;
 
       if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">当前筛选或搜索词下暂无匹配课程</div>`;
+        listEl.innerHTML = `<div class="text-xs text-slate-500 p-4 text-center">暂无匹配课程</div>`;
         document.getElementById('lessonContentArea').innerHTML = `
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center space-y-3">
-            <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-500"></i>
             <div class="text-sm font-bold text-slate-300">没有找到匹配的课程内容</div>
             <button onclick="document.getElementById('courseFilter').value='ALL'; clearSearch();" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-bold transition">重置筛选条件</button>
           </div>
@@ -895,10 +972,26 @@
       return lesson.diagram || DEFAULT_DIAGRAMS[lesson.id] || '';
     }
 
-    // =========================================================================
-    // 7. 单讲内容深度渲染（Mermaid + 分步倒计时 + Prompt 变量实时填空器）
-    // =========================================================================
-    async function renderLesson(lesson) {
+    async function renderActiveMermaid() {
+      if (!currentLessonObj) return;
+      const diagramCode = getLessonDiagramCode(currentLessonObj);
+      const target = document.getElementById('mermaidRenderTarget');
+      if (!diagramCode || !target) return;
+
+      if (mermaidReady && window.mermaid) {
+        try {
+          const uniqueId = 'mmd-' + Date.now();
+          const { svg } = await window.mermaid.render(uniqueId, diagramCode);
+          target.innerHTML = svg;
+        } catch (err) {
+          target.innerHTML = `<pre class="text-xs text-amber-300 font-mono text-left w-full overflow-x-auto">${escapeHtml(diagramCode)}</pre>`;
+        }
+      } else {
+        target.innerHTML = `<pre class="text-xs text-slate-300 font-mono text-left w-full overflow-x-auto">${escapeHtml(diagramCode)}</pre>`;
+      }
+    }
+
+    function renderLesson(lesson) {
       currentLessonObj = lesson;
       promptVarState = {};
       renderedPromptTexts = {};
@@ -912,7 +1005,6 @@
       const nextLesson = curIdx >= 0 && curIdx < currentFilteredList.length - 1 ? currentFilteredList[curIdx + 1] : null;
       const diagramCode = getLessonDiagramCode(lesson);
 
-      // 步骤卡片 + 悬浮倒计时触发按钮
       const stepsHtml = (lesson.steps || []).map((s, idx) => {
         const mins = parseStepMinutes(s.time);
         const safeStepTitle = escapeHtml(`Step ${idx + 1} · ${s.title}`).replace(/'/g, "\\'");
@@ -932,7 +1024,6 @@
         `;
       }).join('');
 
-      // Prompt 卡片 + 动态变量填空器
       const promptsHtml = (lesson.prompts || []).map((p, idx) => {
         const btnId = `copy-p-${idx}`;
         renderedPromptTexts[idx] = p.content;
@@ -974,7 +1065,6 @@
         `;
       }).join('');
 
-      // Mermaid 动态架构图板块
       const diagramBlock = diagramCode ? `
         <div class="bg-slate-900 rounded-2xl p-6 border border-cyan-500/30 space-y-3 print-card">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -985,8 +1075,8 @@
               <i class="fa-regular fa-copy mr-1"></i>复制 Mermaid 代码
             </button>
           </div>
-          <div id="mermaidRenderTarget" class="mermaid-box bg-slate-950 rounded-xl p-4 border border-slate-800 overflow-x-auto min-h-[120px] flex items-center justify-center text-xs text-slate-400">
-            <i class="fa-solid fa-spinner fa-spin mr-2"></i>正在渲染高清矢量架构图...
+          <div id="mermaidRenderTarget" class="mermaid-box bg-slate-950 rounded-xl p-4 border border-slate-800 overflow-x-auto min-h-[100px] flex items-center justify-center text-xs text-slate-400">
+            正在加载矢量图引擎...
           </div>
         </div>
       ` : '';
@@ -1088,7 +1178,6 @@
 
         ${bottomGridBlock}
 
-        <!-- 上一讲 / 下一讲快捷翻页栏 -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2 no-print">
           <button onclick="navigateLesson(-1)" ${!prevLesson ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center ${prevLesson ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700' : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'}">
             <i class="fa-solid fa-arrow-left mr-2"></i>${prevLesson ? '上一讲：' + escapeHtml(prevLesson.badge) : '已是当前列表第一讲'}
@@ -1099,24 +1188,15 @@
         </div>
       `;
 
-      // 异步渲染 Mermaid 矢量架构图
-      if (diagramCode) {
-        const target = document.getElementById('mermaidRenderTarget');
-        if (window.mermaid && target) {
-          try {
-            const uniqueId = 'mmd-' + Date.now();
-            const { svg } = await window.mermaid.render(uniqueId, diagramCode);
-            target.innerHTML = svg;
-          } catch (err) {
-            target.innerHTML = `<pre class="text-xs text-amber-300 font-mono text-left w-full overflow-x-auto">${escapeHtml(diagramCode)}</pre>`;
-          }
-        } else if (target) {
-          target.innerHTML = `<pre class="text-xs text-slate-300 font-mono text-left w-full overflow-x-auto">${escapeHtml(diagramCode)}</pre>`;
-        }
-      }
+      renderActiveMermaid();
     }
 
-    window.onload = bootCourseDatabase;
+    // 使用 DOMContentLoaded 立即启动，绝不等待被屏蔽的外部字体/CDN
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootCourseDatabase);
+    } else {
+      bootCourseDatabase();
+    }
   </script>
 </body>
 </html>

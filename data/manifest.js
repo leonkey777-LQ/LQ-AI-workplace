@@ -5,7 +5,7 @@
 // ============================================================================
 window.COURSE_MANIFEST = {
   version: "3.0",
-  updatedAt: "2026-11",
+  updatedAt: "2026-11-24",
   categories: [
     { id: "L0",  label: "⚡ L0 周末破冰沙龙",            alwaysShow: true },
     { id: "A",   label: "💼 班型A：AI职场提效班",         alwaysShow: true },
